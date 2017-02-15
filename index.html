@@ -1,1 +1,21 @@
-<h1>Hello World</h1>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ETMS</title>
+		<!-- Include the jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" />
+	</head>
+	<body>
+		<!-- Perform Cient side validation before submitting directly to server-->
+		<form id="login_signup_form" action="authenticate.php" method="post">
+			<label for="userName">Username</label>
+			<input type="text" name="userName" id="userName" /> <br />
+			<label for="password">Password</label>
+			<input type="password" name="password" id="password" /> <br />
+			<input type="submit" name="login_button" value="Login"> <br />
+			<label for="newUser">New User?</label>
+			<input type="submit" name="signup_button" value="Sign Up"> <br />
+		</form>
+
+	</body>
+</html>
