@@ -2,20 +2,54 @@
 <html>
 	<head>
 		<title>ETMS</title>
-		<!-- Include the jQuery library -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			function clientSideValidation() {
+				
+				var pattern = /^[a-z][\w\.]{6,10}$/i; // Atleast 7 characters at max 11 characters, both inclusive
+				var userName = document.getElementById("userName");
+				var password = document.getElementById("password");
+				
+				var errorMessage = ""
+				var invalidForm = false;
+
+				if(!pattern.test(userName.value)) {
+					errorMessage += "Username did not match";
+					invalidForm = true;
+				}
+				if(password.value === "" || password.value.length < 8) {
+					errorMessage += "Invalid password";
+					invalidForm = true;
+				}
+				
+				if(invalidForm) {
+					console.log(errorMessage);
+					return false;
+				}
+
+				return true;
+			}
+			function forward_to_signup() {
+				window.location.href = "http://localhost/ETMS/signup.html";
+			}
+		</script>
 	</head>
 	<body>
 		<!-- Perform Cient side validation before submitting directly to server-->
-		<form id="login_signup_form" action="authenticate.php" method="post">
+		<form id="login_form" action="login_authenticate.php" method="post" onsubmit="return clientSideValidation()">
+			
 			<label for="userName">Username</label>
 			<input type="text" name="userName" id="userName" /> <br />
+			
 			<label for="password">Password</label>
 			<input type="password" name="password" id="password" /> <br />
+			
 			<input type="submit" name="login_button" value="Login"> <br />
-			<label for="newUser">New User?</label>
-			<input type="submit" name="signup_button" value="Sign Up"> <br />
+
 		</form>
+		
+		<label for="newUser">New User?</label>
+		<input type="submit" name="signup_button" value="Sign Up" onclick="forward_to_signup()"><br />
 
 	</body>
 </html>
