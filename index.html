@@ -1,55 +1,67 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<!--
+			TO DO:
+			-When the user is not registered show error message at the login form itself
+			-Check all regex
+			-When the email is already registered, show the error message in the sign up form itself
+			-When the user_name is already registered, show the error message in the sign up form itself
+			-Modify the database schema of users and email_addresses such that if user_name is deleted from users then it must be cascaded to email_addresses also, where as deleting email_id from email_addresses must warn the user
+		-->
 		<title>ETMS</title>
+		
+		<!--jQuery library-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-		<script type="text/javascript">
-			function clientSideValidation() {
-				
-				var pattern = /^[a-z][\w\.]{6,10}$/i; // Atleast 7 characters at max 11 characters, both inclusive
-				var userName = document.getElementById("userName");
-				var password = document.getElementById("password");
-				
-				var errorMessage = ""
-				var invalidForm = false;
+		
+		<!--The script file which takes care of form validation at client side-->
+		<script src="js/clientValidate.js"></script>
+	
+		<!-- Bootstrap library -->
+		<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
 
-				if(!pattern.test(userName.value)) {
-					errorMessage += "Username did not match";
-					invalidForm = true;
-				}
-				if(password.value === "" || password.value.length < 8) {
-					errorMessage += "Invalid password";
-					invalidForm = true;
-				}
-				
-				if(invalidForm) {
-					console.log(errorMessage);
-					return false;
-				}
+		<!-- The stylesheet for this page -->
+      	<link rel="stylesheet" href="styles/indexStyle.css">
 
-				return true;
-			}
-			function forward_to_signup() {
-				window.location.href = "http://localhost/ETMS/signup.html";
-			}
-		</script>
 	</head>
 	<body>
-		<!-- Perform Cient side validation before submitting directly to server-->
-		<form id="login_form" action="login_authenticate.php" method="post" onsubmit="return clientSideValidation()">
-			
-			<label for="userName">Username</label>
-			<input type="text" name="userName" id="userName" /> <br />
-			
-			<label for="password">Password</label>
-			<input type="password" name="password" id="password" /> <br />
-			
-			<input type="submit" name="login_button" value="Login"> <br />
+		<!--
+			This page renders the login form.
+			Before the form gets submitted, client side validation is done.
+			Check the 'clientValidate.js' script for details of validation.
+			After successfully validating the form at client side, the data is posted to the server
+			which will be handled by 'login_authenticate.php' script.
+		-->
+		<div class="heading" style="text-align: center;">
+			<h1>ETMS: Expenses and To-do Management System</h1>
+		</div>
 
-		</form>
+		<div class="wrapper">
+			<form class="form-login" id="login_form" action="php/login_authenticate.php" method="post" onsubmit="return validateLogin()">
 		
-		<label for="newUser">New User?</label>
-		<input type="submit" name="signup_button" value="Sign Up" onclick="forward_to_signup()"><br />
+				<h2 class="form-login-heading">Please login</h2>
+
+				<!-- The user name of the user for ETMS website -->
+				<label for="userName">Username</label>
+				<input type="text" class="form-control" name="userName" id="userName" placeholder="Username" required="" autofocus="" /> <br />
+				
+				<!-- Corresponding password -->
+				<label for="password">Password</label>
+				<input type="password" class="form-control" name="password" id="password" placeholder="Password" required=""/> <br />
+				
+				<input class="btn btn-lg btn-primary btn-block" type="submit" name="login_button" value="Login"> <br />
+
+				<!--
+					If the user is new, then s/he must proceed to sign up
+				-->
+			
+				<label for="newUser" style="margin-bottom:20px;">New User?</label>
+				<input class="btn btn-lg btn-primary btn-block" type="submit" name="signup_button" value="Sign Up" onclick="forward_to_signup()"><br />
+
+			</form>
+		</div>
 
 	</body>
 </html>
+
+

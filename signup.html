@@ -2,91 +2,71 @@
 <html>
 	<head>
 		<title>ETMS</title>
+		
+		<!--jQuery library-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-		<script type="text/javascript">
-			function clientSideValidation() {
+		
+		<!--The script file which takes care of form validation at client side-->
+		<script src="js/clientValidate.js"></script>
+	
+		<!-- Bootstrap library -->
+		<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
 
-				var firstName = document.getElementById("firstName").value;
-				var lastName = document.getElementById("lastName").value;
-				var gender = document.getElementById("gender").value;
-				var emailAddress = document.getElementById("emailAddress").value;
-				var userName = document.getElementById("userName").value;
-				var password = document.getElementById("password").value;
-				var retypePassword = document.getElementById("retypePassword").value;
+		<!-- The stylesheet for this page -->
+      	<link rel="stylesheet" href="styles/signUpStyle.css">
 
-				if(firstName === "" || gender === "" || emailAddress === ""
-					|| userName === "" || password === "" || retypePassword === "") {
-					console.log("Please fill the entire form");
-					return false;
-				}
-
-				var namePattern = /^[a-zA-Z]+$/;
-				var emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-				var userNamePattern = /^[a-z][\w\.]{6,10}$/i; // Atleast 7 characters at max 11 characters, both inclusive
-				var errorMessage = "";
-				var invalid = false;
-
-				if(!namePattern.test(firstName)) {
-					errorMessage += "firstName is INVALID\n";
-					invalid = true;
-				}
-				if(lastName !== "" && !namePattern.test(lastName)) {
-					errorMessage += "lastName is INVALID\n";
-					invalid = true;
-				}
-				if(!emailPattern.test(emailAddress)) {
-					errorMessage += "emailAddress is INVALID\n";
-					invalid = true;
-				}
-				if(!userNamePattern.test(userName)) {
-					errorMessage += "userName is INVALID\n";
-					invalid = true;
-				}
-				if(password !== retypePassword) {
-					errorMessage += "passwords DO NOT match\n";
-					invalid = true;
-				}
-
-				if(invalid) {
-					console.log(errorMessage);
-					return false;
-				}
-
-				return true;
-
-			}
-		</script>
 	</head>
 	<body>
-		<form id="signup_form" action="signup_authenticate.php" method="post" onsubmit="return clientSideValidation()">
-			
-			<label for="firstName">First Name</label>
-			<input type="text" name="firstName" id="firstName" /> <br />
-			
-			<!-- Not mandatory -->
-			<label for="lastName">Last Name</label>
-			<input type="text" name="lastName" id="lastName" /> <br />
-			
-			<label for="gender">Gender</label>
-			<fieldset id="gender" style="border: 0;">
-		        <label for="male">Male</label> <input type="radio" value="male" name="Male">
-		        <label for="female">Female</label> <input type="radio" value="female" name="Female">
-		    </fieldset>
-			
-			<label for="emailAddress">Email Address</label>
-			<input type="text" name="emailAddress" id="emailAddress" /> <br />
-			
-			<label for="userName">Choose a Username</label>
-			<input type="text" name="userName" id="userName" /> <br />
-			
-			<label for="password">Password</label>
-			<input type="password" name="password" id="password" /> <br />
+		<!--
+			This page renders the signUp form.
+			Before the form gets submitted, client side validation is done.
+			Check the 'clientValidate.js' script for details of validation.
+			After successfully validating the form at client side, the data is posted to the server
+			which will be handled by 'signup_authenticate.php' script.
+		-->
+		<div class="heading" style="text-align: center;">
+			<h1>ETMS: Expenses and To-do Management System</h1>
+		</div>
 
-			<label for="retypePassword">Retype Password</label>
-			<input type="password" name="retypePassword" id="retypePassword" /> <br />
-			
-			<input type="submit" name="signin_button" value="Sign In"> <br />
+		<div class="wrapper">
+			<form class="form-signup" id="signup_form" action="php/signup_authenticate.php" method="post" onsubmit="return validateSignUp()">
+				
+				<h2 class="form-signup-heading">Sign Up</h2>
 
-		</form>
+				<!-- The first name of the user -->
+				<label for="firstName">First Name</label>
+				<input type="text" class="form-control" placeholder="First Name" autofocus="" required="" name="firstName" id="firstName" /> <br />
+				
+				<!-- The last name of the user. But this is not mandatory -->
+				<label for="lastName">Last Name</label>
+				<input type="text" class="form-control" placeholder="Last Name" name="lastName" id="lastName" /> <br />
+				
+				<!-- The gender of the user -->
+				<label for="gender">Gender</label>
+				<fieldset class="form-control" id="gender" style="border: 0;">
+			        <label for="male">Male <input type="radio" required="" value="male" name="gender"></label>
+			        <label for="female">Female <input type="radio" required="" value="female" name="gender"></label> 
+			    </fieldset>
+				
+				<!-- The Email address of the user -->
+				<label for="emailAddress">Email Address</label>
+				<input type="text" class="form-control" placeholder="Email Address" required="" name="emailAddress" id="emailAddress" /> <br />
+				
+				<!-- Username of the user which will be used to login to ETMS -->
+				<label for="userName">Choose a Username</label>
+				<input type="text" class="form-control" placeholder="Username" required="" name="userName" id="userName" /> <br />
+				
+				<!-- Password for the ETMS website account -->
+				<label for="password">Password</label>
+				<input type="password" class="form-control" placeholder="Password" required="" name="password" id="password" /> <br />
+
+				<!-- Retype the password additional security-->
+				<label for="retypePassword">Retype Password</label>
+				<input type="password" class="form-control" placeholder="Retype Password" required="" name="retypePassword" id="retypePassword" /> <br />
+				
+				<input type="submit" class="btn btn-lg btn-primary btn-block" name="signup_button" value="Sign Up"> <br />
+
+			</form>
+		</div>
 	</body>
 </html>
