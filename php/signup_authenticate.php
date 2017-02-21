@@ -14,83 +14,78 @@
 	    $emailAddress = test_input($_POST["emailAddress"]);
 	    $userName = test_input($_POST["userName"]);
 	    $password = test_input($_POST["password"]);
+	    $retypePassword = test_input($_POST["retypePassword"]);
 
 	    $result = validateFirstName($firstName);
-	    if(!$result) {
-	    	logMessage(FIRST_NAME_ERROR);
-	    	echo "<script>window.location.href='http://localhost/ETMS/signup.html'</script>"; # Redirect to Signup Page
-	    }
+	    if(!$result)
+	    	echo FIRST_NAME_ERROR;
 	    else {
 	    	$result = validateLastName($lastName);
-	    	if(!$result) {
-	    		logMessage(LAST_NAME_ERROR);
-	    		echo "<script>window.location.href='http://localhost/ETMS/signup.html'</script>"; # Redirect to Signup Page
-	    	}
+	    	if(!$result)
+	    		echo LAST_NAME_ERROR;
 	    	else {
 	    		$result = validateEmail($emailAddress);
-	    		if(!$result) {
-	    			logMessage(EMAIL_ERROR);
-	    			echo "<script>window.location.href='http://localhost/ETMS/signup.html'</script>"; # Redirect to Signup Page
-	    		}
+	    		if(!$result)
+	    			echo EMAIL_ERROR;
 	    		else {
 	    			$result = validateUserName($userName);
-					if(!$result) {
-						logMessage(USER_NAME_ERROR);
-						echo "<script>window.location.href='http://localhost/ETMS/signup.html'</script>"; # Redirect to Signup Page
-					}
+					if(!$result)
+						echo USER_NAME_ERROR;
 					else {
 						$result = validatePassword($password);
-						if(!($result === true)) {
-							logMessage(PASSWORD_ERROR);
-							echo "<script>window.location.href='http://localhost/ETMS/signup.html'</script>"; # Redirect to Signup Page
-						}
+						if(!($result === true))
+							echo PASSWORD_ERROR;
 						else {
-							# Before adding the user to database, check whether the userName provided conflicts
-							# with any other userName already present in the database
-							$result = checkUserName($userName);	    
-							$newUser = false;
-							switch($result) {
-								case NEW_USER:
-									$newUser = true;
-									break;
-								case USER_ALREADY_REGISTERED:
-									logMessage(USER_ALREADY_REGISTERED);
-									echo "<script>window.location.href='http://localhost/ETMS/signup.html'</script>"; # Redirect to Signup Page
-									break;
-								default:
-									echo "Error while interacting with database";
-							}
-
-							if($newUser) {
-								# Before adding the user to database, check whether the email ID provided conflicts
-								# with any other email already present in the database
-								$result = checkEmailAddress($emailAddress);
-								$newEmail = false;
-
-								switch ($result) {
-								    case NEW_EMAIL:
-								        $newEmail = true;
-								        break;
-								    case EMAIL_ALREADY_REGISTERED:
-								        logMessage(EMAIL_ALREADY_REGISTERED);
-								        break;
-								    default:
-								        echo "Error while interacting with database";
+							$result = passwordsMatch($password,$retypePassword);
+							if(!$result)
+								echo PASSWORD_MATCH_ERROR;
+							else {
+								# Before adding the user to database, check whether the userName provided conflicts
+								# with any other userName already present in the database
+								$result = checkUserName($userName);	    
+								$newUser = false;
+								switch($result) {
+									case NEW_USER:
+										$newUser = true;
+										break;
+									case USER_ALREADY_REGISTERED:
+										echo USER_ALREADY_REGISTERED;
+										break;
+									default:
+										echo "Error while interacting with database";
 								}
 
-								# If the email address is new then insert the user into users table
-								# And also insert the emailAddress into the email_addresses table
-								if($newEmail) {
-									$result = addUserToDatabase($firstName,$lastName,$gender,$emailAddress,$userName,$password);
-									if($result === SUCCESSFUL_OPR) {
-										$result = addEmailToDatabase($userName,$emailAddress);
-										if($result === SUCCESSFUL_OPR)
-											echo "<script>window.location.href='http://localhost/ETMS/home.html'</script>"; # Redirect to Home Page
-										else
-											logMessage("Unable to add email Address to the database! Delete the user who was added immediately");
+								if($newUser) {
+									# Before adding the user to database, check whether the email ID provided conflicts
+									# with any other email already present in the database
+									$result = checkEmailAddress($emailAddress);
+									$newEmail = false;
+
+									switch ($result) {
+									    case NEW_EMAIL:
+									        $newEmail = true;
+									        break;
+									    case EMAIL_ALREADY_REGISTERED:
+									        echo EMAIL_ALREADY_REGISTERED;
+									        break;
+									    default:
+									        echo "Error while interacting with database";
 									}
-									else
-										echo "Error while interacting with database";
+
+									# If the email address is new then insert the user into users table
+									# And also insert the emailAddress into the email_addresses table
+									if($newEmail) {
+										$result = addUserToDatabase($firstName,$lastName,$gender,$emailAddress,$userName,$password);
+										if($result === SUCCESSFUL_OPR) {
+											$result = addEmailToDatabase($userName,$emailAddress);
+											if($result === SUCCESSFUL_OPR)
+												header("Location: http://localhost/ETMS/home.html"); # Redirect to Home Page
+											else
+												echo "Unable to add email Address to the database! Delete the user who was added immediately";
+										}
+										else
+											echo "Error while interacting with database";
+									}
 								}
 							}
 						}

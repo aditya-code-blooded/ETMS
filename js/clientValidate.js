@@ -269,6 +269,7 @@ function validateSignUp() {
 				lastName: lastName.value,
 				emailAddress: emailAddress.value,
 				gender: selectedGender
+				retypePassword: retypePassword.value
 			}, 
 			function(returnStatus){
 		    	console.log("AJAX call callback: " + returnStatus);

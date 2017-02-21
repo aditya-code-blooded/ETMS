@@ -315,42 +315,22 @@
 			(iv) Must contain atleast one special character (!,(,),@,#,$,%,^,&,*,/,\,[,],{,},:,;,',`,?,+,-)
 			(i.e. almost all special characters present on the keyboard)
 		*/
-	    
-
-		# You are here
 
 	    $length = strlen($passwd);
-	    echo "Inside checkPassword: $passwd";
+
 	    if ($length < 6)
 	        return "Your password is too short. It must be atleast 7 characters.";
 	    else if ($length > 20)
 	        return "Your password is too long. It must be at maximum 20 characters";
-	    else if (preg_match('/[0-9]/',$passwd))
+	    else if (preg_match('/[0-9]/',$passwd) !== 1)
 	        return "Your password must contain atleast one number";
-	    else if (preg_match('/[a-zA-Z]/',$passwd))
+	    else if (preg_match('/[a-zA-Z]/',$passwd) !== 1)
 	        return "Your password must contain atleast one letter from the alphabet";
-	    else if (preg_match('/[!@%^&#*]/',$passwd))
+	    else if (preg_match('/[!@%^&#*]/',$passwd) !== 1)
 	        return "Your password must contain atleast one special character";
 	    return true;
 
 	}
-
-	/*
-		A regex for username input. It enforces that:
-		(i) Username length must lie between [7,20]
-		(ii) Must start with a letter
-		(iii) Should not contain white spaces or special characters
-	*/ 
-	$userNamePattern = '/^[A-Za-z][A-Za-z0-9]{6,19}$/';
-
-	# A regex for firstName input. Its length must lie in between [4,20] and must only contain letters from the alphabet
-	$firstNamePattern = '/^[a-zA-Z]{3,19}$/';
-
-	# A regex for lastName input. Its length must lie in between [1,20] and must only contain letters from the alphabet
-	$lastNamePattern = '/^[a-zA-Z]{0,19}$/';
-
-	# A regex for email address
-	$emailPattern = '/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/';
 
 	# This function validates username (It uses the regex for username as specified by the global variable)
 	function validateUserName($userName) {
@@ -364,19 +344,24 @@
 
 	// A function to validate firstName (It uses the regex for firstName as specified by the global variable)
 	function validateFirstName($firstName) {
-		return preg_match($GLOBALS['$firstNamePattern'],$firstName);
+		return preg_match('/^[a-zA-Z]{3,19}$/',$firstName);
 	}
 
 	// A function to validate lastName (It uses the regex for lastName as specified by the global variable)
 	function validateLastName($lastName) {
 		// If last name is empty then we need not validate (and therefore we return true)
 		// Note: LastName is not mandatory in the database too! (see the schema)
-		return preg_match($GLOBALS['$lastNamePattern'],$lastName);
+		return preg_match('/^[a-zA-Z]{0,19}$/',$lastName);
 	}
 
 	// A function to validate emailAddress (It uses the regex for emailAddress as specified by the global variable)
 	function validateEmail($emailAddress) {
-		return preg_match($GLOBALS['$emailPattern'],$emailAddress);
+		return preg_match('/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/',$emailAddress);
+	}
+
+	// A function which tests whether both the passwords match
+	function passwordsMatch($password,$retypePassword) {
+		return (strcmp($password,$retypePassword) === 0);
 	}
 
 ?>

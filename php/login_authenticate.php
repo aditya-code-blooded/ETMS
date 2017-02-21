@@ -27,32 +27,25 @@
 			client side validation is disabled
 	  	*/
 		$result = validateUserName($userName);
-		if(!$result) {
-			logMessage(USER_NAME_ERROR);
-			echo "<script>window.location.href='http://localhost/ETMS/'</script>"; # Redirect to Login Page
-		}
+		if(!$result)
+			echo USER_NAME_ERROR;
 		else {
 			$result = validatePassword($password);
 			echo $result;
-			if(!($result === true)) {
-				logMessage(PASSWORD_ERROR);
-				echo "<script>window.location.href='http://localhost/ETMS/'</script>"; # Redirect to Login Page
-			}
+			if(!($result === true))
+				echo PASSWORD_ERROR;
 			else {
 				# After the processing, query the database whether the credentials are right
 				$result = present($userName,$password);
-
 				switch ($result) {
 				    case SUCCESSFUL_OPR:
-				        echo "<script>window.location.href='http://localhost/ETMS/home.html'</script>"; # Redirect to Home Page
+				    	header("Location: http://localhost/ETMS/home.html"); # Redirect to Home Page
 				        break;
 				    case INCORRECT_PASSWORD:
-				        logMessage(INCORRECT_PASSWORD_ERROR);
-				        echo "<script>window.location.href='http://localhost/ETMS/'</script>"; # Redirect to Login Page
+				        echo INCORRECT_PASSWORD_ERROR;
 				        break;
 				    case UNREGISTERED_USER:
-				        logMessage(UNREGISTERED_USER_ERROR);
-				        echo "<script>window.location.href='http://localhost/ETMS/'</script>"; # Redirect to Login Page
+				        echo UNREGISTERED_USER_ERROR;
 				        break;
 				    default:
 				        echo "Error while interacting with database";
