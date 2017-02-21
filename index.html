@@ -3,20 +3,15 @@
 	<head>
 		<!--
 			TO DO:
-			-When the user is not registered show error message at the login form itself
 			-Check all regex
-			-When the email is already registered, show the error message in the sign up form itself
-			-When the user_name is already registered, show the error message in the sign up form itself
 			-Modify the database schema of users and email_addresses such that if user_name is deleted from users then it must be cascaded to email_addresses also, where as deleting email_id from email_addresses must warn the user
+			-Server side validation is not yet done (only we checked for sql injection)
 		-->
 		<title>ETMS</title>
 		
-		<!--jQuery library-->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-		
 		<!--The script file which takes care of form validation at client side-->
 		<script src="js/clientValidate.js"></script>
-	
+
 		<!-- Bootstrap library -->
 		<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
 
@@ -42,12 +37,12 @@
 				<h2 class="form-login-heading">Please login</h2>
 
 				<!-- The user name of the user for ETMS website -->
-				<label for="userName">Username</label>
-				<input type="text" class="form-control" name="userName" id="userName" placeholder="Username" required="" autofocus="" /> <br />
+				<label for="userName">Username</label> <span id="userNameError" style="color:red;font-size:13px"></span>
+				<input type="text" class="form-control" name="userName" id="userName" placeholder="Username" required="" autofocus="" onclick="removeUserErrorMessage(this)"/> <br />
 				
 				<!-- Corresponding password -->
-				<label for="password">Password</label>
-				<input type="password" class="form-control" name="password" id="password" placeholder="Password" required=""/> <br />
+				<label for="password" style="color:black">Password</label> <span id="passwordError" style="color:red;font-size:13px"></span>
+				<input type="password" class="form-control" name="password" id="password" placeholder="Password" required="" onclick="removePasswordErrorMessage(this)"/> <br />
 				
 				<input class="btn btn-lg btn-primary btn-block" type="submit" name="login_button" value="Login"> <br />
 
@@ -55,13 +50,15 @@
 					If the user is new, then s/he must proceed to sign up
 				-->
 			
-				<label for="newUser" style="margin-bottom:20px;">New User?</label>
+				<label for="newUser" style="color:black;margin-bottom:20px;">New User?</label>
 				<input class="btn btn-lg btn-primary btn-block" type="submit" name="signup_button" value="Sign Up" onclick="forward_to_signup()"><br />
 
 			</form>
 		</div>
 
 	</body>
+	<!--Load the jQuery library. We load it at the end of the page for efficiency-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </html>
 
 

@@ -3,9 +3,6 @@
 	<head>
 		<title>ETMS</title>
 		
-		<!--jQuery library-->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-		
 		<!--The script file which takes care of form validation at client side-->
 		<script src="js/clientValidate.js"></script>
 	
@@ -34,39 +31,41 @@
 				<h2 class="form-signup-heading">Sign Up</h2>
 
 				<!-- The first name of the user -->
-				<label for="firstName">First Name</label>
-				<input type="text" class="form-control" placeholder="First Name" autofocus="" required="" name="firstName" id="firstName" /> <br />
+				<label for="firstName">First Name</label> <span id="emptyFormError" style="color:red;font-size:13px"></span> <span id="firstNameError" style="color:red;font-size:13px"></span>
+				<input type="text" class="form-control" placeholder="First Name" autofocus="" required="" name="firstName" id="firstName" onclick="removeFirstNameErrorMessage(this)" /> <br />
 				
 				<!-- The last name of the user. But this is not mandatory -->
-				<label for="lastName">Last Name</label>
-				<input type="text" class="form-control" placeholder="Last Name" name="lastName" id="lastName" /> <br />
+				<label for="lastName">Last Name</label> <span id="lastNameError" style="color:red;font-size:13px"></span>
+				<input type="text" class="form-control" placeholder="Last Name" name="lastName" id="lastName" onclick="removeLastNameErrorMessage(this)"/> <br />
 				
 				<!-- The gender of the user -->
-				<label for="gender">Gender</label>
-				<fieldset class="form-control" id="gender" style="border: 0;">
-			        <label for="male">Male <input type="radio" required="" value="male" name="gender"></label>
-			        <label for="female">Female <input type="radio" required="" value="female" name="gender"></label> 
+				<label for="gender">Gender</label> <span id="genderError" style="color:red;font-size:13px"></span>
+				<fieldset class="form-control" id="gender" style="border: 0;" onclick="removeGenderErrorMessage(this)">
+			        <label for="male">Male <input id="maleGender" type="radio" required="" value="male" name="gender"></label>
+			        <label for="female">Female <input id="femaleGender" type="radio" required="" value="female" name="gender"></label> 
 			    </fieldset>
 				
 				<!-- The Email address of the user -->
-				<label for="emailAddress">Email Address</label>
-				<input type="text" class="form-control" placeholder="Email Address" required="" name="emailAddress" id="emailAddress" /> <br />
+				<label for="emailAddress">Email Address</label> <span id="emailError" style="color:red;font-size:13px"></span>
+				<input type="text" class="form-control" placeholder="Email Address" required="" name="emailAddress" id="emailAddress" onclick="removeEmailErrorMessage(this)"/> <br />
 				
 				<!-- Username of the user which will be used to login to ETMS -->
-				<label for="userName">Choose a Username</label>
-				<input type="text" class="form-control" placeholder="Username" required="" name="userName" id="userName" /> <br />
+				<label for="userName">Choose a Username</label> <span id="userNameError" style="color:red;font-size:13px"></span>
+				<input type="text" class="form-control" placeholder="Username" required="" name="userName" id="userName" onclick="removeUserErrorMessage(this)"/> <br />
 				
 				<!-- Password for the ETMS website account -->
-				<label for="password">Password</label>
-				<input type="password" class="form-control" placeholder="Password" required="" name="password" id="password" /> <br />
+				<label for="password">Password</label> <span id="passwordError" style="color:red;font-size:13px"></span>
+				<input type="password" class="form-control" placeholder="Password" required="" name="password" id="password" onclick="removePasswordErrorMessage(this)" /> <br />
 
 				<!-- Retype the password additional security-->
-				<label for="retypePassword">Retype Password</label>
-				<input type="password" class="form-control" placeholder="Retype Password" required="" name="retypePassword" id="retypePassword" /> <br />
+				<label for="retypePassword">Retype Password</label> <span id="retypePasswordError" style="color:red;font-size:13px"></span>
+				<input type="password" class="form-control" placeholder="Retype Password" required="" name="retypePassword" id="retypePassword" onclick="removeRetypeErrorMessage(this)" /> <br />
 				
 				<input type="submit" class="btn btn-lg btn-primary btn-block" name="signup_button" value="Sign Up"> <br />
 
 			</form>
 		</div>
 	</body>
+	<!--Load the jQuery library. We load it at the end of the page for efficiency-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </html>
