@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<!--
-			TO DO:
-			-Check all regex
-			-Modify the database schema of users and email_addresses such that if user_name is deleted from users then it must be cascaded to email_addresses also, where as deleting email_id from email_addresses must warn the user
-			-Server side validation is not yet done (only we checked for sql injection)
-		-->
+
 		<title>ETMS</title>
 		
 		<!--The script file which takes care of form validation at client side-->
 		<script src="js/clientValidate.js"></script>
+
+		<!--The script file which has all the constants defined, which our js files use-->
+		<script src="js/constants.js"></script>
+
+		<!--The script file which contains utility functions-->
+		<script src="js/utility.js"></script>
 
 		<!-- Bootstrap library -->
 		<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
@@ -48,8 +49,20 @@
 
 				<!--
 					If the user is new, then s/he must proceed to sign up
+
+
+
+						<<<<<<<<<<<<<< 	SIGN UP BUTTON NOT WORKING when javascript is disabled because forward_to_signup() wont get executed >>>>>>>>>>>>>>
+
+
+
 				-->
-			
+
+						<!--
+			TO DO:
+			-Modify the database schema of users and email_addresses such that if user_name is deleted from users then it must be cascaded to email_addresses also, where as deleting email_id from email_addresses must warn the user
+		-->
+
 				<label for="newUser" style="color:black;margin-bottom:20px;">New User?</label>
 				<input class="btn btn-lg btn-primary btn-block" type="submit" name="signup_button" value="Sign Up" onclick="forward_to_signup()"><br />
 
