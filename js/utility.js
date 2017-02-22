@@ -52,4 +52,7 @@ function removeRetypeErrorMessage(ref) {
 
 function forward_to_signup() {
 	window.location.href = SIGN_UP_URL;
+	// We return false so that action attribute of the corresponding form tag doesn't get executed
+	// when onSubmit returns false
+	return false;
 }

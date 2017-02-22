@@ -45,28 +45,21 @@
 				<label for="password" style="color:black">Password</label> <span id="passwordError" style="color:red;font-size:13px"></span>
 				<input type="password" class="form-control" name="password" id="password" placeholder="Password" required="" onclick="removePasswordErrorMessage(this)"/> <br />
 				
-				<input class="btn btn-lg btn-primary btn-block" type="submit" name="login_button" value="Login"> <br />
-
-				<!--
-					If the user is new, then s/he must proceed to sign up
-
-
-
-						<<<<<<<<<<<<<< 	SIGN UP BUTTON NOT WORKING when javascript is disabled because forward_to_signup() wont get executed >>>>>>>>>>>>>>
-
-
-
-				-->
-
-						<!--
-			TO DO:
-			-Modify the database schema of users and email_addresses such that if user_name is deleted from users then it must be cascaded to email_addresses also, where as deleting email_id from email_addresses must warn the user
-		-->
-
-				<label for="newUser" style="color:black;margin-bottom:20px;">New User?</label>
-				<input class="btn btn-lg btn-primary btn-block" type="submit" name="signup_button" value="Sign Up" onclick="forward_to_signup()"><br />
+				<input class="btn btn-lg btn-primary btn-block" type="submit" name="login_button" value="Login">
 
 			</form>
+
+			<!--
+				The below form handles the signin process.
+				When javascript is enabled then forward_to_signup() gets fired and navigates to signup.html
+				When javascript is disabled then forwardToSignup.php does the job of redirection
+			-->
+
+			<form class="form-login" id="login_form" action="php/forwardToSignup.php" method="post" onsubmit="return forward_to_signup()">
+				<label for="newUser" style="color:black;margin-bottom:20px;">New User? Go ahead and Signup!</label>
+				<input class="btn btn-lg btn-primary btn-block" type="submit" name="signup_button" value="Sign Up"><br />
+			</form>
+			
 		</div>
 
 	</body>

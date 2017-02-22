@@ -38,5 +38,9 @@
 	define("EMAIL_ALREADY_REGISTERED_ERROR"," * This email is already registered, choose another.");
 	define("FILL_THE_ENTIRE_FORM_ERROR","Please fill the entire form");
 
+	# Constants for web pages
+	define("SIGN_UP_URL","http://localhost/ETMS/signup.html");
+	define("HOME_PAGE_URL","http://localhost/ETMS/home.html");
+
 	$ERROR_VALUE_DESC = ""; # This variable contains the description of the error message when ERROR_VALUE is returned
 ?>
