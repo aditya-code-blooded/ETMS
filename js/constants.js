@@ -48,3 +48,4 @@ var USER_ALREADY_REGISTERED_ERROR = "This username has already been registered, 
 // URLS
 var HOME_PAGE_URL = "http://localhost/ETMS/home.html";
 var SIGN_UP_URL = "http://localhost/ETMS/signup.html";
+var LOGIN_URL = "http://localhost/ETMS/index.html";

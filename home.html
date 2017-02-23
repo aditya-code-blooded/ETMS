@@ -1,1 +1,98 @@
-<h1>Home</h1>
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+	 	<title>ETMS - Home</title>
+	  	<meta charset="utf-8">
+	  	<meta name="viewport" content="width=device-width, initial-scale=1">
+	  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	  	<script>
+	  		
+	  		var currentlyActiveLink = "introLink";
+
+	  		// When the page is loaded, by default the home link at the header of the page must be clicked
+	  		$(document).ready(function() {
+    			$(".introLink").click();
+    			$(".introLink").parent().get(0).className = "active";
+            	$("." + currentlyActiveLink).parent().className = "";
+            	currentlyActiveLink = "introLink";
+            	$("#container").load("intro.html");
+			});
+
+	  		// When the header links are clicked, the div element marked with "container" ID
+	  		// must be loaded with respective HTML pages
+	  		// (In other words, the header is fixed for the entire application)
+
+            function loadIntro() {
+            	if(currentlyActiveLink != "introLink") {
+            		$(".introLink").parent().get(0).className = "active";
+	            	$("." + currentlyActiveLink).parent().get(0).className = "";
+	            	currentlyActiveLink = "introLink";
+	            	$("#container").load("intro.html");
+            	}
+            	return false;
+            }
+            function loadExpenses() {
+            	if(currentlyActiveLink != "expensesLink") {
+            		$(".expensesLink").parent().get(0).className = "active";
+	            	$("." + currentlyActiveLink).parent().get(0).className = "";
+	            	currentlyActiveLink = "expensesLink";
+	            	$("#container").load("expenses.html");
+            	}
+            	return false;
+            }
+            function loadTodo() {
+            	if(currentlyActiveLink != "todoLink") {
+            		$(".todoLink").parent().get(0).className = "active";
+	            	$("." + currentlyActiveLink).parent().get(0).className = "";
+	            	currentlyActiveLink = "todoLink";
+	            	$("#container").load("todo.html");
+            	}
+            	return false;
+            }
+            function loadProfile() {
+            	if(currentlyActiveLink != "profileLink") {
+            		$(".profileLink").parent().get(0).className = "active";
+	            	$("." + currentlyActiveLink).parent().get(0).className = "";
+	            	currentlyActiveLink = "profileLink";
+	            	$("#container").load("profile.html");
+            	}
+            	return false;
+            }
+	  	</script>
+
+	</head>
+
+	<body>
+
+		<!--
+			This page renders the Home page of the web app.
+			It contains various links which help you navigate the entire application
+		-->
+
+		<nav class="navbar navbar-inverse">
+		  	<div class="container-fluid">
+		    	<div class="navbar-header">
+		      		<li class="navbar-brand">ETMS</li>
+		    	</div>
+			    <ul class="nav navbar-nav">
+			      	<li><a href="#" class="introLink" onclick="return loadIntro()">Home</a></li>
+			      	<li><a href="#" class="expensesLink" onclick="return loadExpenses()">Expenses</a></li>
+			      	<li><a href="#" class="todoLink" onclick="return loadTodo()">To Do</a></li>
+			      	<li><a href="#" class="profileLink" onclick="return loadProfile()">My Profile</a></li>
+			    </ul>
+			    <ul class="nav navbar-nav navbar-right">
+			      	<li><a href="http://localhost/ETMS/" id="logoutPage"><span class="glyphicon glyphicon-log-in"></span> Logout </a></li>
+			    </ul>
+		  	</div>
+		</nav>
+		  
+		 <!-- Within this container all other pages are displayed -->
+		<div id="container" style="text-align: center"></div>
+
+	</body>
+
+</html>
