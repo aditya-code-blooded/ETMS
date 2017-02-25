@@ -41,6 +41,8 @@
 	# Constants for web pages
 	define("SIGN_UP_URL","http://localhost/ETMS/signup.html");
 	define("HOME_PAGE_URL","http://localhost/ETMS/home.html");
+	define("LOGIN_PAGE_URL","http://localhost/ETMS/index.html");
+	define("ERROR_PAGE_URL","http://localhost/ETMS/error.html");
 
 	$ERROR_VALUE_DESC = ""; # This variable contains the description of the error message when ERROR_VALUE is returned
 ?>

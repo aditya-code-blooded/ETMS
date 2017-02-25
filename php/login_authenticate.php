@@ -1,4 +1,36 @@
 <?php
+
+	# This file performs server side validation of the input data from login form.
+	# After the data is validated (to prevent SQL injection attacks) query the database for credentials and validate.
+
+	# Start the session
+	session_start();
+	# Include the file for gaining access to several functions
+	require 'databaseQueries.php';
+	/*
+		Check whether the user is logged in. This can be done by
+		checking whether the session variables: userName and password
+		are set.
+	*/ 
+	if(isset($_SESSION['userName']) && isset($_SESSION['password'])) {
+
+		# If they are set we need to make sure they are valid
+		# We do this by making a database call
+
+		$result = present($_SESSION['userName'],$_SESSION['password']);
+		if($result === SUCCESSFUL_OPR) {
+			# The user is logged in, we need to redirect him to home page
+			header("Location: " . HOME_PAGE_URL);
+		}
+		else {
+			# The sessions variables are set but are incorrect!
+			# Security threat - Currently let us log the statements
+			header("Location: " . ERROR_PAGE_URL);
+		}
+	}
+	# If the session is not set, it means the user is trying to login
+	# No security issue
+
 	/*
 		Go to php.ini file in ./php/7.0/apachee tergv
 		find error_reporting and restore changes
@@ -10,11 +42,6 @@
 	error_reporting(E_ALL);
 	ini_set('display_errors', 'On');
 
-	# This file performs server side validation of the input data from login form.
-	# After the data is validated (to prevent SQL injection attacks) query the database for credentials and validate.
-
-	# Include the file for gaining access to several functions
-	require 'databaseQueries.php';
 
 	if (isset($_POST['login_button'])) {
 		# Test for malicious input (The return value will be free from sql injection attack)
@@ -39,6 +66,9 @@
 				$result = present($userName,$password);
 				switch ($result) {
 				    case SUCCESSFUL_OPR:
+				    	# Set the session variables
+				    	$_SESSION['userName'] = $userName;
+				    	$_SESSION['password'] = $password;
 				    	header("Location: http://localhost/ETMS/home.html"); # Redirect to Home Page
 				        break;
 				    case INCORRECT_PASSWORD:
@@ -64,6 +94,12 @@
 
 	  	# After the processing, query the database whether the credentials are right
 		$result = present($userName,$password);
+
+		# Set the session variables only if the result is successful
+		if($result === SUCCESSFUL_OPR) {
+			$_SESSION['userName'] = $userName;
+    		$_SESSION['password'] = $password;
+		}
 
 		echo $result; # Send the return status to the AJAX callback function
 	}
