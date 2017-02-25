@@ -53,7 +53,7 @@
 		    	return UNREGISTERED_USER;
 		    else if($rows === 1) {
 		    	# user_name exists, now check for password
-		    	if($password === $retrievedPassword)
+		    	if(password_verify($password, $retrievedPassword))
 		    		return SUCCESSFUL_OPR;
 		    	else
 		    		return INCORRECT_PASSWORD;
@@ -177,6 +177,8 @@
 		$query = "INSERT INTO users(user_name,password,first_name,last_name,gender) VALUES(?,?,?,?,?)";
 		if($stmt = mysqli_prepare($mysqli,$query)) {
 
+			# Before adding the user to database, we need to encrypt the password for security
+			$password = password_hash($password, PASSWORD_DEFAULT);
 			# bind the parameters to the wildcard entries in the query
 		    mysqli_stmt_bind_param($stmt, "sssss", $userName, $password, $firstName, $lastName, $gender);
 		    # execute the query

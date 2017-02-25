@@ -160,7 +160,6 @@
 			else {
 				# If the email address is new then insert the user into users table
 				# And also insert the emailAddress into the email_addresses table
-
 				$result = addUserToDatabase($firstName,$lastName,$gender,$emailAddress,$userName,$password);
 				if($result === SUCCESSFUL_OPR) {
 					# Before redirecting the user to Home page, store the username and password in the session variables
