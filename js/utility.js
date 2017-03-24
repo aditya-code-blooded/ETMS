@@ -56,3 +56,15 @@ function forward_to_signup() {
 	// when onSubmit returns false
 	return false;
 }
+
+function removeTitleErrorMessage(ref) {
+	var titleError = document.getElementById("titleError");
+	ref.style.borderColor = "";
+	titleError.innerHTML = "";
+}
+
+function removeDescriptionErrorMessage(ref) {
+	var descriptionError = document.getElementById("descriptionError");
+	ref.style.borderColor = "";
+	descriptionError.innerHTML = "";
+}

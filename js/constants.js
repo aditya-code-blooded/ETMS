@@ -43,9 +43,18 @@ var UNREGISTERED_USER_ERROR = " * You haven't registered. Try Signing up";
 var EMAIL_ALREADY_REGISTERED_ERROR = " * This email is already registered, choose another.";
 var FILL_THE_ENTIRE_FORM_ERROR = "Please fill the entire form";
 var USER_ALREADY_REGISTERED_ERROR = "This username has already been registered, choose another";
-
+var INVALID_TITLE_ERROR = " * Special characters are not allowed";
+var TITLE_LENGTH_ERROR = " * Maximum length of title is 50";
+var INVALID_DESC_ERROR = " * Special characters are not allowed";
+var DESC_LENGTH_ERROR = " * Maximum length of description is 200";
 
 // URLS
 var HOME_PAGE_URL = "http://localhost/ETMS/home.html";
 var SIGN_UP_URL = "http://localhost/ETMS/signup.html";
 var LOGIN_URL = "http://localhost/ETMS/index.html";
+
+// Some other constants
+var INVALID_TITLE = "Title is invalid";
+var INVALID_DESC = "Description is invalid";
+var TITLE_LENGTH_EXCEEDED = "Title length exceeded";
+var DESC_LENGTH_EXCEEDED = "Description length exceeded";

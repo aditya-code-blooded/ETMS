@@ -1,1 +1,228 @@
-<h1>Todo</h1>
+<?php
+	// Start the session
+	session_start();
+	# Include the file for gaining access to several functions
+	require 'php/databaseQueries.php';
+	/*
+		Check whether the user is logged in. This can be done by
+		checking whether the session variables: userName and password
+		are set.
+	*/
+	if(isset($_SESSION['userName']) && isset($_SESSION['password'])) {
+
+		// If they are set we need to make sure they are valid
+		// We do this by making a database call
+
+		$result = present($_SESSION['userName'],$_SESSION['password']);
+		if($result === SUCCESSFUL_OPR) {
+			// Extract the userName
+			$userName = $_SESSION['userName'];
+		}
+		else {
+			# The sessions variables are set but are incorrect!
+			# Security threat - Redirect to error page
+			header("Location: " . ERROR_PAGE_URL);
+		}
+	}
+	else {
+		# Session variables are not set
+		# Security threat - Redirect to error page
+		header("Location: " . ERROR_PAGE_URL);
+	}
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Bootstrap library -->
+		<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
+		
+		<!-- The stylesheet for this page -->
+      	<link rel="stylesheet" href="styles/todoStyle.css">
+
+      	<script>var userName = <?php echo json_encode($userName); ?>;</script>
+		<script>
+
+			// A function which make an entry into the todoList 'div' tag, given the title and description
+			function addTodo(title,description) {
+				// Create anchor tag
+	    		var $anchorTag = $("<a>", {"class": "list-group-item"}).css("padding","10px");
+	    		
+	    		// Create h4 tag for holding our title
+	    		var h4Tag = document.createElement("h4");
+	    		h4Tag.style.fontWeight = "bold";
+	    		h4Tag.style.color = "black";
+	    		h4Tag.innerHTML = title;
+	    		h4Tag.class = "list-group-item-heading";
+	    		h4Tag.style.marginLeft = "10px";
+
+	    		// Create p tag for holding our description
+	    		var pTag = document.createElement("p");
+	    		pTag.innerHTML = description;
+	    		pTag.class = "list-group-item-text";
+	    		pTag.style.color = "black";
+	    		pTag.style.marginLeft = "10px";
+
+	    		// Tie everythin together
+	    		$anchorTag.append(h4Tag);
+	    		$anchorTag.append(pTag);
+	    		$("#listOfTodos").append($anchorTag);
+			}
+
+			// A function which validates the title and returns appropriate status (which are self explanatory)
+			function validateTitle(title) {
+				var length = title.length;
+				if(length > 50)
+					return TITLE_LENGTH_EXCEEDED;
+				for(var i = 0;i < length;++i) {
+					switch(title[i]) {
+						case '<':
+						case '>':
+						case '/':
+						case '\\':
+						case '!':
+						case '@':
+						case '#':
+						case '$':
+						case '%':
+						case '^':
+						case '{':
+						case '}': return INVALID_TITLE;
+					}
+				}
+				return SUCCESSFUL_OPR;
+			}
+
+			// A function which validates the description and returns appropriate status (which are self explanatory)
+			function validateDescription(desc) {
+				var length = title.length;
+				if(length > 200)
+					return DESC_LENGTH_EXCEEDED;
+				for(var i = 0;i < length;++i) {
+					switch(title[i]) {
+						case '<':
+						case '>':
+						case '/':
+						case '\\':
+						case '!':
+						case '@':
+						case '#':
+						case '$':
+						case '%':
+						case '^':
+						case '{':
+						case '}': return INVALID_DESC;
+					}
+				}
+				return SUCCESSFUL_OPR;
+			}
+
+			// A function which validates the 'title' and 'description' fields and makes an AJAX call to dynamically create new TO-DO
+			function createTodo() {
+				console.log("Inside createTODO method");
+				var title = document.getElementById("title");
+				var description = document.getElementById("description");
+
+				var titleError = document.getElementById("titleError");
+				var descriptionError = document.getElementById("descriptionError");
+
+				// Check whether the inputs are valid
+				var result = validateTitle(title.value);
+				if(result === INVALID_TITLE)
+					titleError.innerHTML = INVALID_TITLE_ERROR;
+				else if(result === TITLE_LENGTH_EXCEEDED)
+					titleError.innerHTML = TITLE_LENGTH_ERROR;
+				else {
+					result = validateDescription(description.value);
+					if(result === INVALID_DESC)
+						descriptionError.innerHTML = INVALID_DESC_ERROR;
+					else if(result === DESC_LENGTH_EXCEEDED)
+						descriptionError.innerHTML = DESC_LENGTH_ERROR;
+					else {
+						// If both the inputs are valid, make an AJAX post-call to create the TO-DO
+						$.post('php/createTodo.php', { title: title.value, description: description.value}, 
+							function(returnStatus){
+						    	console.log("AJAX call: " + returnStatus);
+						    	if(returnStatus === SUCCESSFUL_OPR) {
+						    		// Successfully created the TODO
+						    		// Add it to the unordered list
+						    		addTodo(title.value,description.value);
+						    	}
+						    	else {
+						    		// Internal Database Error (Normally this case shouldn't occur)
+						    		titleError.innerHTML = "FATAL ERROR: " + returnStatus;
+						    	}
+						});
+					}
+				}
+
+				// Make sure to return false, otherwise the action attribute of form tag gets fired
+				return false;
+			}
+
+			// A function which uses javascript 'Promise' object to asynchronously load our script files
+			function loadScript(src) {
+			    return new Promise(function (resolve, reject) {
+			        var s;
+			        s = document.createElement('script');
+			        s.src = src;
+			        s.onload = resolve;
+			        s.onerror = reject;
+			        document.head.appendChild(s);
+			    });
+			}
+
+			/*
+				When the document is ready, we load the external script files asynchronously. This is because, the current page will be loaded asynchronously into the div tag of home.html. Whereas when script files are normally included in a webpage they load synchronously. Therefore as soon as our document gets loaded, we load all our required files asynchronously.
+			*/
+
+			loadScript("js/utility.js");
+    		loadScript("js/constants.js");
+
+    		// We perform an AJAX GET operation to the database by the following php script
+    		$.get('php/extractToDo.php', { userName: userName }, function(todoList){
+			    console.log("Todo list is: " + todoList);
+			    var json = JSON.parse(todoList);
+			    for(var i in json) {
+			    	var item = json[i];
+			    	var title = item['title'];
+			    	var description = item['description'];
+			    	addTodo(title,description);
+			    }
+			});
+
+		</script>
+	</head>
+	<body>
+		<div style="background-color: black;margin-top: -20px;">
+			<br/>
+			<div style="background-color: #001a1a;color: white;padding: 20px;margin-bottom: -40px">
+				<div class="wrapper">
+					<!--Form for creating a to-do-->
+					<form class="form-login" id="create_todo_form" action="" method="post" onsubmit="return createTodo()">
+				
+						<h3 class="form-login-heading">Create a To-do</h3>
+
+						<!-- The title of the Todo -->
+						<label for="title">Title</label> <span id="titleError" style="color:red;font-size:13px"></span>
+						<input type="text" class="form-control" name="title" id="title" placeholder="Title" required="" onclick="removeTitleErrorMessage(this)"/> <br />
+						
+						<!-- Corresponding description (optional) -->
+						<label for="description" style="color:white">Description</label> <span id="descriptionError" style="color:red;font-size:13px"></span>
+						<textarea class="form-control" name="description" id="description" placeholder="Description" onclick="removeDescriptionErrorMessage(this)"/> <br />
+						
+						<input class="btn btn-lg btn-primary btn-block" type="submit" name="submit_button" value="Create">
+
+					</form>
+				</div>
+
+				<!-- These div tags hold our TO-DO list which will be extracted from database -->
+				<h1 id="yourTodos" style="text-align: center;font-weight:bold;padding: 10px">Your todo's</h1>
+				<div id="listOfTodos" class="list-group" style="margin-top: 40px"></div>
+
+			</div>
+			<br/> <br/>
+		</div>
+	</body>
+</html>
+
+

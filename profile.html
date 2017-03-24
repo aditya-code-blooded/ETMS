@@ -1,1 +1,42 @@
-<h1>Profile</h1>
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Bootstrap library -->
+		<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
+		
+		<!-- The stylesheet for this page -->
+      	<link rel="stylesheet" href="styles/profileStyle.css">
+
+		<script>
+
+			// A function which uses javascript 'Promise' object to asynchronously load our script files
+			function loadScript(src) {
+			    return new Promise(function (resolve, reject) {
+			        var s;
+			        s = document.createElement('script');
+			        s.src = src;
+			        s.onload = resolve;
+			        s.onerror = reject;
+			        document.head.appendChild(s);
+			    });
+			}
+
+			/*
+				When the document is ready, we load the external script files asynchronously. This is because, the current page will be loaded asynchronously into the div tag of home.html. Whereas when script files are normally included in a webpage they load synchronously. Therefore as soon as our document gets loaded, we load all our required files asynchronously.
+			*/
+
+			// loadScript("js/utility.js");
+    		// loadScript("js/constants.js");
+
+		</script>
+	</head>
+	<body>
+		<div style="background-color: black;margin-top: -20px;">
+			<br/>
+			<div style="background-color: #001a1a;color: white;padding: 20px;margin-bottom: -40px">
+				
+			</div>
+			<br/> <br/>
+		</div>
+	</body>
+</html>

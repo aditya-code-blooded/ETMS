@@ -24,7 +24,7 @@
 		}
 		else {
 			# The sessions variables are set but are incorrect!
-			# Security threat - Currently let us log the statements
+			# Security threat - Redirect to error page
 			header("Location: " . ERROR_PAGE_URL);
 		}
 	}
