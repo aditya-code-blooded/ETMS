@@ -594,4 +594,160 @@
 		}
 	}
 
+	# Updates the college name of the specified user.
+	# It returns SUCCESSFUL_OPR if the operation is successful, or else ERROR_VALUE
+	function updateCollege($userName,$college) {
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in updateCollege() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+
+		$query = "UPDATE users SET college = ? WHERE user_name = ?";
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# bind the parameters to the wildcard entries in the query
+		    mysqli_stmt_bind_param($stmt, "ss", $college, $userName);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # get the number of rows affected due to insert/delete/update
+		    $rows = mysqli_stmt_affected_rows($stmt);
+
+		    if($rows > 0) # We are able to update, hence signal success
+		    	return SUCCESSFUL_OPR;
+		    else # Some Error, despite several checks, Oooops!
+		    	return ERROR_VALUE;
+		    
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in updateCollege()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
+	# Updates the address of the specified user.
+	# It returns SUCCESSFUL_OPR if the operation is successful, or else ERROR_VALUE
+	function updateAddress($userName,$address) {
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in updateAddress() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+
+		$query = "UPDATE users SET address = ? WHERE user_name = ?";
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# bind the parameters to the wildcard entries in the query
+		    mysqli_stmt_bind_param($stmt, "ss", $address, $userName);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # get the number of rows affected due to insert/delete/update
+		    $rows = mysqli_stmt_affected_rows($stmt);
+
+		    if($rows > 0) # We are able to update, hence signal success
+		    	return SUCCESSFUL_OPR;
+		    else # Some Error, despite several checks, Oooops!
+		    	return ERROR_VALUE;
+		    
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in updateAddress()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
+	# Updates the contact name of the specified user.
+	# It returns SUCCESSFUL_OPR if the operation is successful, or else ERROR_VALUE
+	function updateContact($userName,$contact) {
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in updateContact() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+
+		$query = "UPDATE users SET contact = ? WHERE user_name = ?";
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# bind the parameters to the wildcard entries in the query
+		    mysqli_stmt_bind_param($stmt, "ss", $contact, $userName);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # get the number of rows affected due to insert/delete/update
+		    $rows = mysqli_stmt_affected_rows($stmt);
+
+		    if($rows > 0) # We are able to update, hence signal success
+		    	return SUCCESSFUL_OPR;
+		    else # Some Error, despite several checks, Oooops!
+		    	return ERROR_VALUE;
+		    
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in updateContact()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
+	# Updates the email of the specified user.
+	# It returns SUCCESSFUL_OPR if the operation is successful, or else ERROR_VALUE
+	function updateEmail($userName,$email) {
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in updateEmail() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+
+		$query = "UPDATE email_addresses SET email_id = ? WHERE user_name = ?";
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# bind the parameters to the wildcard entries in the query
+		    mysqli_stmt_bind_param($stmt, "ss", $email, $userName);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # get the number of rows affected due to insert/delete/update
+		    $rows = mysqli_stmt_affected_rows($stmt);
+
+		    if($rows > 0) # We are able to update, hence signal success
+		    	return SUCCESSFUL_OPR;
+		    else # Some Error, despite several checks, Oooops!
+		    	return ERROR_VALUE;
+		    
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in updateEmail()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
 ?>

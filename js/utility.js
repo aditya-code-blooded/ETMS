@@ -68,3 +68,27 @@ function removeDescriptionErrorMessage(ref) {
 	ref.style.borderColor = "";
 	descriptionError.innerHTML = "";
 }
+
+function removeCollegeErrorMessage(ref) {
+	var collegeError = document.getElementById("collegeError");
+	ref.style.borderColor = "";
+	collegeError.innerHTML = "";
+}
+
+function removeAddressErrorMessage(ref) {
+	var addressError = document.getElementById("addressError");
+	ref.style.borderColor = "";
+	addressError.innerHTML = "";
+}
+
+function removeContactErrorMessage(ref) {
+	var contactError = document.getElementById("contactError");
+	ref.style.borderColor = "";
+	contactError.innerHTML = "";
+}
+
+function removeEmailErrorMessage(ref) {
+	var emailError = document.getElementById("emailError");
+	ref.style.borderColor = "";
+	emailError.innerHTML = "";
+}

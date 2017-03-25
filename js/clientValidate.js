@@ -85,6 +85,67 @@ function validateEmail(emailAddress,emailError) {
 	return true;
 }
 
+// A function to validate a string which represents a college name
+function validateCollege(college) {
+	if(college.length > 50)
+		return COLLEGE_ERROR;
+	var spaces = 0;
+	for(var i = 0;i < college.length;++i) {
+		if(!((college[i] >= 'a' && college[i] <= 'z')
+			|| (college[i] >= 'A' && college[i] <= 'Z'))) {
+			if(college[i] = ' ')
+				spaces++;
+			else
+				return COLLEGE_ERROR;
+		}
+	}
+	if(spaces === college.length)
+		return COLLEGE_ERROR;
+
+	return SUCCESSFUL_OPR;
+}
+
+// A function to validate a string which represents an address
+function validateAddress(address) {
+	if(address.length > 255)
+		return ADDRESS_ERROR;
+	var spaces = 0;
+	for(var i = 0;i < address.length;++i) {
+		if(!((address[i] >= 'a' && address[i] <= 'z')
+			|| (address[i] >= 'A' && address[i] <= 'Z')
+			|| address[i] === ',' || address[i] === ':'
+			|| (address[i] >= '0' && address[i] <= '9'))) {
+			if(address[i] = ' ')
+				spaces++;
+			else
+				return ADDRESS_ERROR;
+		}
+	}
+	if(spaces === address.length)
+		return ADDRESS_ERROR;
+
+	return SUCCESSFUL_OPR;
+}
+
+// A function to validate a string which represents a contact number
+function validateContact(contact) {
+	if(contact.length != 10)
+		return CONTACT_ERROR;
+	for(var i = 0;i < contact.length;++i)
+		if(!(contact[i] >= '0' && contact[i] <= '9'))
+			return CONTACT_ERROR;
+	return SUCCESSFUL_OPR;
+}
+
+// A function to validate a string which represents an email address
+// (This is used in profile.html while updating the user)
+function validateEmail2(email) {
+	if(!emailPattern.test(email))
+		return EMAIL_ERROR;
+	else
+		return SUCCESSFUL_OPR;
+}
+
 // A function which tests whether both the passwords match
 function passwordsMatch(password,retypePassword) {
 	if(password.value !== retypePassword.value) {

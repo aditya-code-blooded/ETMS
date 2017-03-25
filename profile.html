@@ -47,6 +47,26 @@
 
 		<script>
 
+			// A function which uses javascript 'Promise' object to asynchronously load our script files
+			function loadScript(src) {
+			    return new Promise(function (resolve, reject) {
+			        var s;
+			        s = document.createElement('script');
+			        s.src = src;
+			        s.onload = resolve;
+			        s.onerror = reject;
+			        document.head.appendChild(s);
+			    });
+			}
+
+			/*
+				When the document is ready, we load the external script files asynchronously. This is because, the current page will be loaded asynchronously into the div tag of home.html. Whereas when script files are normally included in a webpage they load synchronously. Therefore as soon as our document gets loaded, we load all our required files asynchronously.
+			*/
+
+			loadScript("js/utility.js");
+    		loadScript("js/constants.js");
+    		loadScript("js/clientValidate.js");
+
 			// Extract the php variables into javascript variables
 			// These variables will be used to populate the UI
 			var userName = <?php echo json_encode($userName); ?>;
@@ -119,7 +139,162 @@
 
     			var expensesSummaryField = document.getElementById("expensesSummaryField");
     			expensesSummaryField.innerHTML = totalExpenses;
+
+    			// Get the modal
+				var modal = document.getElementById('myModal');
+
+				// Get the <span> element that closes the modal
+				var span = document.getElementsByClassName("close")[0];
+
+				// When the user clicks on <span> (x), close the modal
+				span.onclick = function() {
+				    modal.style.display = "none";
+				}
+
+				// When the user clicks anywhere outside of the modal, close it
+				window.onclick = function(event) {
+				    if (event.target == modal) {
+				        modal.style.display = "none";
+				    }
+				}
 			})();
+
+			function openEditingSection() {
+				// Get the modal
+				var modal = document.getElementById('myModal');
+				modal.style.display = "block";
+				return false;
+			}
+
+			// Updates the college field in the database
+			function updateCollege(userName,college) {
+				// We perform an AJAX POST operation to the database by the following php script
+	    		$.post('php/updateCollege.php',
+	    				{ 	userName: userName,
+	    					college: college
+	    				},
+	    				function(data){
+						    console.log(data);
+						}
+				);
+			}
+
+			// Updates the address field in the database
+			function updateAddress(userName,address) {
+				// We perform an AJAX POST operation to the database by the following php script
+	    		$.post('php/updateAddress.php',
+	    				{ 	userName: userName,
+	    					address: address
+	    				},
+	    				function(data){
+						    console.log(data);
+						}
+				);
+			}
+
+			// Updates the contact field in the database
+			function updateContact(userName,contact) {
+				// We perform an AJAX POST operation to the database by the following php script
+	    		$.post('php/updateContact.php',
+	    				{ 	userName: userName,
+	    					contact: contact
+	    				},
+	    				function(data){
+						    console.log(data);
+						}
+				);
+			}
+
+			// Updates the email field in the database
+			function updateEmail(userName,email) {
+				// We perform an AJAX POST operation to the database by the following php script
+	    		$.post('php/updateEmail.php',
+	    				{ 	userName: userName,
+	    					email: email
+	    				},
+	    				function(data){
+						    console.log(data);
+						}
+				);
+			}
+
+			// This function updates the user information by validating the form data and
+			// delegating the call to the database to a php script
+			function updateUser() {
+				var newCollege = document.getElementById("newCollege").value;
+				var newAddress = document.getElementById("newAddress").value;
+				var newContact = document.getElementById("newContact").value;
+				var newEmail = document.getElementById("newEmail").value;
+
+				var collegeError = document.getElementById("collegeError");
+				var addressError = document.getElementById("addressError");
+				var contactError = document.getElementById("contactError");
+				var emailError = document.getElementById("emailError");
+
+				var result;
+				var errorCount = 0;
+				var successCount = 0;
+
+				if(newCollege !== "") {
+					result = validateCollege(newCollege);
+					if(result === SUCCESSFUL_OPR) {
+						updateCollege(userName,newCollege);
+						successCount++;
+					}
+					else {
+						collegeError.innerHTML = result;
+						errorCount++;
+					}
+				}
+
+				if(newAddress !== "") {
+					result = validateAddress(newAddress);
+					if(result === SUCCESSFUL_OPR) {
+						updateAddress(userName,newAddress);
+						successCount++;
+					}
+					else {
+						addressError.innerHTML = result;
+						errorCount++;
+					}
+				}
+
+				if(newContact !== "") {
+					result = validateContact(newContact);
+					if(result === SUCCESSFUL_OPR) {
+						updateContact(userName,newContact);
+						successCount++;
+					}
+					else {
+						contactError.innerHTML = result;
+						errorCount++;
+					}
+				}
+
+				if(newEmail !== "") {
+					result = validateEmail2(newEmail);
+					if(result === SUCCESSFUL_OPR) {
+						updateEmail(userName,newEmail);
+						successCount++;
+					}
+					else {
+						emailError.innerHTML = result;
+						errorCount++;
+					}
+				}
+
+				// If error count is zero, then close the modal (pop-up)
+				if(errorCount === 0) {
+					// Get the <span> element that closes the modal
+					var span = document.getElementsByClassName("close")[0];
+					span.click();
+					if(successCount > 0)
+						window.location.reload();
+				}
+
+
+				return false;
+			}
 
 		</script>
 	</head>
@@ -181,10 +356,49 @@
 		                            </div>
 		                        </div>
 		                        <div class="panel-footer">
-		                            <a href="edit.html" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning">
+		                            <a href="" data-original-title="Edit user info" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning" onclick="return openEditingSection()">
 		                                <i class="glyphicon glyphicon-edit"></i>
 		                            </a>
 		                        </div>
+
+		                        <div id="myModal" class="modal">
+
+							  		<!-- Modal content -->
+							  		<div class="modal-content">
+									    <div class="modal-header">
+									      	<span class="close">&times;</span>
+									      	<h2 style="text-align:center">Update the User Information</h2>
+									    </div>
+									    <div class="modal-body">
+									      	<div class="wrapper">
+												<!--Form for creating a to-do-->
+												<form class="form-login" id="update_user_form" action="" method="post" onsubmit="return updateUser()">
+
+													<!-- The College of the user -->
+													<label for="newCollege">College</label> <span id="collegeError" style="color:red;font-size:13px"></span>
+													<input type="text" class="form-control" name="newCollege" id="newCollege" placeholder="College" onclick="removeCollegeErrorMessage(this)"/> <br />
+													
+													<!-- The Address of the user -->
+													<label for="newAddress">Address</label> <span id="addressError" style="color:red;font-size:13px"></span>
+													<input type="text" class="form-control" name="newAddress" id="newAddress" placeholder="Address" onclick="removeAddressErrorMessage(this)"/> <br />
+													
+													<!-- The Contact of the user -->
+													<label for="newContact">Contact</label> <span id="contactError" style="color:red;font-size:13px"></span>
+													<input type="text" class="form-control" name="newContact" id="newContact" placeholder="Contact" onclick="removeContactErrorMessage(this)"/> <br />
+
+													<!-- The Email of the user -->
+													<label for="newEmail">Email</label> <span id="emailError" style="color:red;font-size:13px"></span>
+													<input type="text" class="form-control" name="newEmail" id="newEmail" placeholder="Email" onclick="removeEmailErrorMessage(this)"/> <br />
+
+													<input class="btn btn-lg btn-primary btn-block" type="submit" name="submit_button" value="Update">
+
+												</form>
+											</div>
+									    </div>
+									</div>
+
+								</div>
+
 		                    </div>
 		                </div>
 		            </div>

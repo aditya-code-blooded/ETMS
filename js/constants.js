@@ -47,6 +47,9 @@ var INVALID_TITLE_ERROR = " * Special characters are not allowed";
 var TITLE_LENGTH_ERROR = " * Maximum length of title is 50";
 var INVALID_DESC_ERROR = " * Special characters are not allowed";
 var DESC_LENGTH_ERROR = " * Maximum length of description is 200";
+var CONTACT_ERROR = " * Contact number should contain 10 digits";
+var COLLEGE_ERROR = " * Maximum length of college is 50 and should contain only letters from english alphabet";
+var ADDRESS_ERROR = " * Maximum length of address is 255 and should not contain special characters";
 
 // URLS
 var HOME_PAGE_URL = "http://localhost/ETMS/home.html";
