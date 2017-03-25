@@ -92,3 +92,9 @@ function removeEmailErrorMessage(ref) {
 	ref.style.borderColor = "";
 	emailError.innerHTML = "";
 }
+
+function removeAmountErrorMessage(ref) {
+	var amountError = document.getElementById("amountError");
+	ref.style.borderColor = "";
+	amountError.innerHTML = "";
+}

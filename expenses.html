@@ -1,1 +1,287 @@
-<h1>Expenses</h1>
+<?php
+	// Start the session
+	session_start();
+	# Include the file for gaining access to several functions
+	require 'php/databaseQueries.php';
+	/*
+		Check whether the user is logged in. This can be done by
+		checking whether the session variables: userName and password
+		are set.
+	*/
+	if(isset($_SESSION['userName']) && isset($_SESSION['password'])) {
+
+		// If they are set we need to make sure they are valid
+		// We do this by making a database call
+
+		$result = present($_SESSION['userName'],$_SESSION['password']);
+		if($result === SUCCESSFUL_OPR) {
+			// Extract the userName
+			$userName = $_SESSION['userName'];
+		}
+		else {
+			# The sessions variables are set but are incorrect!
+			# Security threat - Redirect to error page
+			header("Location: " . ERROR_PAGE_URL);
+		}
+	}
+	else {
+		# Session variables are not set
+		# Security threat - Redirect to error page
+		header("Location: " . ERROR_PAGE_URL);
+	}
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Bootstrap library -->
+		<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
+		
+		<!-- The stylesheet for this page -->
+      	<link rel="stylesheet" href="styles/expensesStyle.css">
+
+      	<script>var userName = <?php echo json_encode($userName); ?>;</script>
+		<script>
+
+			var expensesCounter = 0;
+
+			// A function which make an entry into the expensesList 'div' tag, given the amount and description
+			function addExpense(amount,description,paidDate) {
+
+	    		expensesCounter++;
+	    		var divTag = document.createElement("div");
+	    		divTag.style.backgroundColor = "white";
+	    		divTag.id = expensesCounter;
+	    		divTag.style.padding = "10px";
+	    		divTag.style.width = "700px";
+	    		divTag.style.marginTop = "10px";
+	    		divTag.style.marginLeft = "260px";
+	    		divTag.style.marginBottom = "10px";
+	    		divTag.style.borderRadius = "10px";
+	    		divTag.onmouseenter = function(ref) {
+	    			divTag.style.borderLeft = "15px solid #4c90ff";
+	    			var btn = document.getElementById("deleteButton" + ref.target.id);
+	    			btn.style.display = "inline";
+	    		}
+	    		divTag.onmouseleave = function(ref) {
+	    			divTag.style.borderLeft = "";
+	    			var btn = document.getElementById("deleteButton" + ref.target.id);
+	    			btn.style.display = "none";
+	    		}
+
+	    		// Create h4 tag for holding our amount
+	    		var h4Tag = document.createElement("h4");
+	    		h4Tag.id = "amount" + expensesCounter;
+	    		h4Tag.style.fontWeight = "bold";
+	    		h4Tag.style.color = "black";
+	    		h4Tag.innerHTML = "Amount paid: " + amount + "Rs";
+	    		h4Tag.style.marginLeft = "10px";
+
+	    		// Create p tag for holding our description
+	    		var pTag1 = document.createElement("p");
+	    		pTag1.id = "desc" + expensesCounter;
+	    		pTag1.innerHTML = description;
+	    		pTag1.style.color = "black";
+	    		pTag1.style.marginLeft = "10px";
+
+	    		// Create another p tag for holding paid_date
+	    		var pTag2 = document.createElement("p");
+	    		pTag2.innerHTML = "Paid Date: " + paidDate;
+	    		pTag2.style.color = "#078f91";
+	    		pTag2.style.marginLeft = "10px";
+
+	    		// Create delete button which will delete the Expense
+	    		var deleteButton = document.createElement("input");
+	    		deleteButton.className = "btn btn-default";
+	    		deleteButton.type = "submit";
+	    		deleteButton.value = "Delete";
+	    		deleteButton.name = "deleteButton" + expensesCounter;
+	    		deleteButton.style.display = "none";
+	    		deleteButton.id = "deleteButton" + expensesCounter;
+	    		deleteButton.onclick = function(ref) {
+	    			var id = document.getElementById(ref.target.id).parentElement.id;
+	    			document.getElementById(id).style.display = "none";
+	    			var amount = parseAmount(document.getElementById("amount" + id).innerHTML);
+	    			var desc = document.getElementById("desc" + id).innerHTML;
+	    			$.post('php/deleteExpense.php',
+	    					{	userName: userName,
+	    						amount: amount,
+	    						desc: desc
+	    					},
+	    					function(data){
+	    						console.log("deleteExpense returned: " + data);
+	    					}
+	    			);
+	    		}
+
+	    		// Tie everythin together
+	    		divTag.append(h4Tag);
+	    		divTag.append(pTag1);
+	    		divTag.append(pTag2);
+	    		divTag.append(deleteButton);
+	    		$("#listOfExpenses").prepend(divTag);
+			}
+
+			// Parses the amountText which is of the form: 'Amount paid: 150Rs'
+			function parseAmount(amountText) {
+				var amount = "";
+				for(var i = 13;amountText[i] !== 'R';i++)
+					amount += amountText[i];
+				return amount;
+			}
+
+			// A function which validates the amount and returns appropriate status (which are self explanatory)
+			function validateAmount(amount) {
+				var length = amount.length;
+				if(length > 7)
+					return AMOUNT_EXCEEDED;
+				
+				var zeroEncountered = false;
+				for(var i = 0;i < length;++i) {
+					if(amount[i] === '0') {
+						if(!zeroEncountered)
+							return INVALID_AMOUNT;
+					}
+					else if(!(amount[i] >= '1' && amount[i] <= '9'))
+						return INVALID_AMOUNT;
+					zeroEncountered = true;
+				}
+				return SUCCESSFUL_OPR;
+			}
+
+			// A function which validates the description and returns appropriate status (which are self explanatory)
+			function validateDescription(desc) {
+				var length = desc.length;
+				if(length > 200)
+					return DESC_LENGTH_EXCEEDED;
+				for(var i = 0;i < length;++i) {
+					switch(desc[i]) {
+						case '<':
+						case '>':
+						case '/':
+						case '\\':
+						case '!':
+						case '@':
+						case '#':
+						case '$':
+						case '%':
+						case '^':
+						case '{':
+						case '}': return INVALID_DESC;
+					}
+				}
+				return SUCCESSFUL_OPR;
+			}
+
+			// A function which validates the 'amount' and 'description' fields and makes an AJAX call to dynamically create new Expense
+			function createExpense() {
+				var amount = document.getElementById("amount");
+				var description = document.getElementById("description");
+
+				var amountError = document.getElementById("amountError");
+				var descriptionError = document.getElementById("descriptionError");
+
+				// Check whether the inputs are valid
+				var result = validateAmount(amount.value);
+				if(result === AMOUNT_EXCEEDED)
+					amountError.innerHTML = AMOUNT_EXCEEDED_ERROR;
+				else if(result === INVALID_AMOUNT)
+					amountError.innerHTML = INVALID_AMOUNT_ERROR;
+				else {
+					result = validateDescription(description.value);
+					if(result === INVALID_DESC)
+						descriptionError.innerHTML = INVALID_DESC_ERROR;
+					else if(result === DESC_LENGTH_EXCEEDED)
+						descriptionError.innerHTML = DESC_LENGTH_ERROR;
+					else {
+						// If both the inputs are valid, make an AJAX post-call to create the Expense
+						$.post('php/createExpense.php', { amount: amount.value, description: description.value}, 
+							function(returnStatus){
+						    	console.log("AJAX call: " + returnStatus);
+						    	if(returnStatus === SUCCESSFUL_OPR) {
+						    		// Successfully created the Expense
+						    		// Add it to the unordered list
+						    		var d = new Date();
+								    var date = d.getDate();
+								    var month = d.getMonth() + 1;
+								    var year = d.getFullYear();
+								    var paidDate = year + "-" + month + "-" + date;
+						    		addExpense(amount.value,description.value,paidDate);
+						    	}
+						    	else {
+						    		// Internal Database Error (Normally this case shouldn't occur)
+						    		amountError.innerHTML = "FATAL ERROR: " + returnStatus;
+						    	}
+						});
+					}
+				}
+
+				// Make sure to return false, otherwise the action attribute of form tag gets fired
+				return false;
+			}
+
+			// A function which uses javascript 'Promise' object to asynchronously load our script files
+			function loadScript(src) {
+			    return new Promise(function (resolve, reject) {
+			        var s;
+			        s = document.createElement('script');
+			        s.src = src;
+			        s.onload = resolve;
+			        s.onerror = reject;
+			        document.head.appendChild(s);
+			    });
+			}
+
+			/*
+				When the document is ready, we load the external script files asynchronously. This is because, the current page will be loaded asynchronously into the div tag of home.html. Whereas when script files are normally included in a webpage they load synchronously. Therefore as soon as our document gets loaded, we load all our required files asynchronously.
+			*/
+
+			loadScript("js/utility.js");
+    		loadScript("js/constants.js");
+
+    		// We perform an AJAX GET operation to the database by the following php script
+    		$.get('php/extractExpense.php', { userName: userName }, function(expenseList){
+			    console.log("Expense list is: " + expenseList);
+			    var json = JSON.parse(expenseList);
+			    for(var i in json) {
+			    	var item = json[i];
+			    	var amount = item['amount'];
+			    	var description = item['description'];
+			    	var paidDate = item['paid_date'];
+			    	addExpense(amount,description,paidDate);
+			    }
+			});
+
+		</script>
+	</head>
+	<body>
+		<div style="background-color: black;margin-top: -20px;">
+			<br/>
+			<div style="background-color: #001a1a;color: white;padding: 20px;margin-bottom: -40px">
+				<div class="wrapper">
+					<!--Form for creating an Expense report-->
+					<form class="form-login" id="create_expense_form" action="" method="post" onsubmit="return createExpense()">
+				
+						<h3 class="form-login-heading">Add an Expense</h3>
+
+						<!-- The amount of the expense -->
+						<label for="amount">Amount</label> <span id="amountError" style="color:red;font-size:13px"></span>
+						<input type="text" class="form-control" name="amount" id="amount" placeholder="Amount" required="" onclick="removeAmountErrorMessage(this)"/> <br />
+						
+						<!-- Corresponding description (optional) -->
+						<label for="description" style="color:white">Description</label> <span id="descriptionError" style="color:red;font-size:13px"></span>
+						<textarea class="form-control" name="description" id="description" placeholder="Description" onclick="removeDescriptionErrorMessage(this)"/> <br />
+						
+						<input class="btn btn-lg btn-primary btn-block" type="submit" name="submit_button" value="ADD">
+
+					</form>
+				</div>
+
+				<!-- These div tags hold our Expense list which will be extracted from database -->
+				<h1 id="yourExpenses" style="text-align: center;font-weight:bold;padding: 10px">Your Expense's</h1>
+				<div id="listOfExpenses" class="list-group" style="margin-top: 40px;"></div>
+
+			</div>
+			<br/> <br/>
+		</div>
+	</body>
+</html>

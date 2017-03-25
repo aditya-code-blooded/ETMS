@@ -50,6 +50,8 @@ var DESC_LENGTH_ERROR = " * Maximum length of description is 200";
 var CONTACT_ERROR = " * Contact number should contain 10 digits";
 var COLLEGE_ERROR = " * Maximum length of college is 50 and should contain only letters from english alphabet";
 var ADDRESS_ERROR = " * Maximum length of address is 255 and should not contain special characters";
+var AMOUNT_EXCEEDED_ERROR = " * Amount value has been exceeded";
+var INVALID_AMOUNT_ERROR = " * Amount should be a valid positive integer < 10^6";
 
 // URLS
 var HOME_PAGE_URL = "http://localhost/ETMS/home.html";
@@ -60,4 +62,6 @@ var LOGIN_URL = "http://localhost/ETMS/index.html";
 var INVALID_TITLE = "Title is invalid";
 var INVALID_DESC = "Description is invalid";
 var TITLE_LENGTH_EXCEEDED = "Title length exceeded";
+var AMOUNT_EXCEEDED = "Amount value has been exceeded";
+var INVALID_AMOUNT = "Amount is invalid! It should contain only numbers";
 var DESC_LENGTH_EXCEEDED = "Description length exceeded";

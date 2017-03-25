@@ -46,8 +46,7 @@
 
 			// A function which make an entry into the todoList 'div' tag, given the title and description
 			function addTodo(title,description,todoDate) {
-				// Create anchor tag
-	    		// var $anchorTag = $("<button>", {"class": "list-group-item"}).css("padding","10px");
+
 	    		todoCounter++;
 	    		var divTag = document.createElement("div");
 	    		divTag.style.backgroundColor = "white";
@@ -75,7 +74,6 @@
 	    		h4Tag.style.fontWeight = "bold";
 	    		h4Tag.style.color = "black";
 	    		h4Tag.innerHTML = title;
-	    		h4Tag.class = "list-group-item-heading";
 	    		h4Tag.style.marginLeft = "10px";
 
 	    		// Create p tag for holding our description
@@ -149,11 +147,11 @@
 
 			// A function which validates the description and returns appropriate status (which are self explanatory)
 			function validateDescription(desc) {
-				var length = title.length;
+				var length = desc.length;
 				if(length > 200)
 					return DESC_LENGTH_EXCEEDED;
 				for(var i = 0;i < length;++i) {
-					switch(title[i]) {
+					switch(desc[i]) {
 						case '<':
 						case '>':
 						case '/':
@@ -173,7 +171,6 @@
 
 			// A function which validates the 'title' and 'description' fields and makes an AJAX call to dynamically create new TO-DO
 			function createTodo() {
-				console.log("Inside createTODO method");
 				var title = document.getElementById("title");
 				var description = document.getElementById("description");
 

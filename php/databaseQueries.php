@@ -261,6 +261,57 @@
 		}
 	}
 
+	# Add the Expense entry to the database (It is assumed that all the parameters specified are VALID)
+	# It returns SUCCESSFUL_OPR if the operation was successful, or else ERROR_VALUE
+	function addExpenseEntry($userName,$amount,$desc) {
+
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in addExpenseEntry() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+
+		$paid_date = date("Y-m-d");
+		$query = "INSERT INTO expenses(user_name,amount,description,paid_date) VALUES(?,?,?,?)";
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# bind the parameters to the wildcard entries in the query
+		    mysqli_stmt_bind_param($stmt, "ssss", $userName, $amount, $desc, $paid_date);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # get the number of rows affected due to insert/delete/update
+		    $rows = mysqli_stmt_affected_rows($stmt);
+		    
+		    /*
+				From the docs (the description of the return values by mysqli_stmt_affected_rows() function):
+				An integer greater than zero indicates the number of rows
+				affected or retrieved. Zero indicates that no records where
+				updated for an UPDATE/DELETE statement, no rows matched the
+				WHERE clause in the query or that no query has yet been executed.
+				-1 indicates that the query has returned an error. NULL
+				indicates an invalid argument was supplied to the function.
+		    */
+
+		    if($rows > 0) # We are able to insert the user, hence signal success
+		    	return SUCCESSFUL_OPR;
+		    else # Some Error, despite several checks, Oooops! 
+		    	return ERROR_VALUE;
+		    
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in addExpenseEntry()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
 	# This function is used to retrieve the to-do list, given a userName as input
 	# It returns a JSON if the operation is successful, else ERROR_VALUE is returned
 	function getToDoList($userName) {
@@ -307,6 +358,57 @@
 		else {
 			# Error in creating the prepared statement. Report it to user
 			$ERROR_VALUE_DESC = "Error while creating the prepared statement in getToDoList()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
+	# This function is used to retrieve the Expense list, given a userName as input
+	# It returns a JSON if the operation is successful, else ERROR_VALUE is returned
+	function getExpenseList($userName) {
+
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in getExpenseList() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+		
+		$query = "SELECT amount, description, paid_date FROM expenses WHERE user_name = ? ORDER BY paid_date ASC";
+		$json = array();
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# This is used for counting the number of rows
+			$rows = 0;
+			# bind the parameter to the wildcard entry in the query
+		    mysqli_stmt_bind_param($stmt, "s", $userName);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # Get the resultset
+			$result = mysqli_stmt_get_result($stmt);
+			
+			# Iterate over the resultset (Start appending the data to $json variable
+			# and keep incrementing the count of row variable)
+			while($eachRow = mysqli_fetch_assoc($result)) {
+				$rows++;
+  				$json[] = $eachRow;
+			}		    
+			// print_r($json);
+
+		    # If the number of rows retrieved are greater than zero, then there's no error
+		    if($rows >= 0)
+		    	return $json;
+		    else
+		    	return ERROR_VALUE; # Oops Error!
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in getExpenseList()";
 			logMessage($ERROR_VALUE_DESC);
 			return ERROR_VALUE;
 		}
@@ -821,6 +923,44 @@
 		else {
 			# Error in creating the prepared statement. Report it to user
 			$ERROR_VALUE_DESC = "Error while creating the prepared statement in deleteTodo()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
+	# This function deletes the Expense (which is uniquely identified in the table by userName, amount and description)
+	function deleteExpense($userName,$amount,$desc) {
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in deleteExpense() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+		# Coerce the string into integer
+		$amount = (int)$amount;
+		$query = "DELETE FROM expenses WHERE user_name = ? AND amount = ? AND description = ?";
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+			# bind the parameters to the wildcard entries in the query
+		    mysqli_stmt_bind_param($stmt, "sis", $userName, $amount, $desc);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # get the number of rows affected due to insert/delete/update
+		    $rows = mysqli_stmt_affected_rows($stmt);
+
+		    if($rows === 1) # We are able to delete, hence signal success
+		    	return SUCCESSFUL_OPR;
+		    else # Some Error, despite several checks, Oooops!
+		    	return ERROR_VALUE;
+		    
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in deleteExpense()";
 			logMessage($ERROR_VALUE_DESC);
 			return ERROR_VALUE;
 		}
