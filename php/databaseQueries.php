@@ -750,4 +750,42 @@
 		}
 	}
 
+	# This function uploads the image's path name (targetFile) into the database for a given userName
+	function uploadProfilePic($userName,$targetFile) {
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in uploadProfilePic() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+
+		$query = "UPDATE users SET profile_photo = ? WHERE user_name = ?";
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# bind the parameters to the wildcard entries in the query
+		    mysqli_stmt_bind_param($stmt, "ss", $targetFile, $userName);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # get the number of rows affected due to insert/delete/update
+		    $rows = mysqli_stmt_affected_rows($stmt);
+
+		    if($rows > 0) # We are able to update, hence signal success
+		    	return SUCCESSFUL_OPR;
+		    else # Some Error, despite several checks, Oooops!
+		    	return ERROR_VALUE;
+		    
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in uploadProfilePic()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
 ?>
