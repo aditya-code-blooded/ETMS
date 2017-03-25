@@ -42,13 +42,36 @@
       	<script>var userName = <?php echo json_encode($userName); ?>;</script>
 		<script>
 
+			var todoCounter = 0;
+
 			// A function which make an entry into the todoList 'div' tag, given the title and description
 			function addTodo(title,description,todoDate) {
 				// Create anchor tag
-	    		var $anchorTag = $("<a>", {"class": "list-group-item"}).css("padding","10px");
-	    		
+	    		// var $anchorTag = $("<button>", {"class": "list-group-item"}).css("padding","10px");
+	    		todoCounter++;
+	    		var divTag = document.createElement("div");
+	    		divTag.style.backgroundColor = "white";
+	    		divTag.id = todoCounter;
+	    		divTag.style.padding = "10px";
+	    		divTag.style.width = "700px";
+	    		divTag.style.marginTop = "10px";
+	    		divTag.style.marginLeft = "260px";
+	    		divTag.style.marginBottom = "10px";
+	    		divTag.style.borderRadius = "10px";
+	    		divTag.onmouseenter = function(ref) {
+	    			divTag.style.borderLeft = "15px solid #4c90ff";
+	    			var btn = document.getElementById("deleteButton" + ref.target.id);
+	    			btn.style.display = "inline";
+	    		}
+	    		divTag.onmouseleave = function(ref) {
+	    			divTag.style.borderLeft = "";
+	    			var btn = document.getElementById("deleteButton" + ref.target.id);
+	    			btn.style.display = "none";
+	    		}
+
 	    		// Create h4 tag for holding our title
 	    		var h4Tag = document.createElement("h4");
+	    		h4Tag.id = "title" + todoCounter;
 	    		h4Tag.style.fontWeight = "bold";
 	    		h4Tag.style.color = "black";
 	    		h4Tag.innerHTML = title;
@@ -57,23 +80,47 @@
 
 	    		// Create p tag for holding our description
 	    		var pTag1 = document.createElement("p");
+	    		pTag1.id = "desc" + todoCounter;
 	    		pTag1.innerHTML = description;
-	    		pTag1.class = "list-group-item-text";
 	    		pTag1.style.color = "black";
 	    		pTag1.style.marginLeft = "10px";
 
 	    		// Create another p tag for holding date
 	    		var pTag2 = document.createElement("p");
 	    		pTag2.innerHTML = "Date added: " + todoDate;
-	    		pTag2.class = "list-group-item-text";
-	    		pTag2.style.color = "black";
+	    		pTag2.style.color = "#078f91";
 	    		pTag2.style.marginLeft = "10px";
 
+	    		// Create delete button which will delete the TODO
+	    		var deleteButton = document.createElement("input");
+	    		deleteButton.className = "btn btn-default";
+	    		deleteButton.type = "submit";
+	    		deleteButton.value = "Delete";
+	    		deleteButton.name = "deleteButton" + todoCounter;
+	    		deleteButton.style.display = "none";
+	    		deleteButton.id = "deleteButton" + todoCounter;
+	    		deleteButton.onclick = function(ref) {
+	    			var id = document.getElementById(ref.target.id).parentElement.id;
+	    			document.getElementById(id).style.display = "none";
+	    			var title = document.getElementById("title" + id).innerHTML;
+	    			var desc = document.getElementById("desc" + id).innerHTML;
+	    			$.post('php/deleteToDo.php',
+	    					{	userName: userName,
+	    						title: title,
+	    						desc: desc
+	    					},
+	    					function(data){
+	    						console.log(data);
+	    					}
+	    			);
+	    		}
+
 	    		// Tie everythin together
-	    		$anchorTag.append(h4Tag);
-	    		$anchorTag.append(pTag1);
-	    		$anchorTag.append(pTag2);
-	    		$("#listOfTodos").append($anchorTag);
+	    		divTag.append(h4Tag);
+	    		divTag.append(pTag1);
+	    		divTag.append(pTag2);
+	    		divTag.append(deleteButton);
+	    		$("#listOfTodos").prepend(divTag);
 			}
 
 			// A function which validates the title and returns appropriate status (which are self explanatory)
@@ -231,7 +278,7 @@
 
 				<!-- These div tags hold our TO-DO list which will be extracted from database -->
 				<h1 id="yourTodos" style="text-align: center;font-weight:bold;padding: 10px">Your todo's</h1>
-				<div id="listOfTodos" class="list-group" style="margin-top: 40px"></div>
+				<div id="listOfTodos" class="list-group" style="margin-top: 40px;"></div>
 
 			</div>
 			<br/> <br/>

@@ -277,7 +277,7 @@
 
 		# No error. Create a prepared statement
 		
-		$query = "SELECT title, description, todo_date FROM todo WHERE user_name = ? ORDER BY todo_date DESC";
+		$query = "SELECT title, description, todo_date FROM todo WHERE user_name = ? ORDER BY todo_date ASC";
 		$json = array();
 		if($stmt = mysqli_prepare($mysqli,$query)) {
 
@@ -783,6 +783,44 @@
 		else {
 			# Error in creating the prepared statement. Report it to user
 			$ERROR_VALUE_DESC = "Error while creating the prepared statement in uploadProfilePic()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
+	# This function deletes the TODO (which is uniquely identified in the table by userName, title and description)
+	function deleteTodo($userName,$title,$desc) {
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in deleteTodo() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+
+		$query = "DELETE FROM todo WHERE user_name = ? AND title = ? AND description = ?";
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# bind the parameters to the wildcard entries in the query
+		    mysqli_stmt_bind_param($stmt, "sss", $userName, $title, $desc);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # get the number of rows affected due to insert/delete/update
+		    $rows = mysqli_stmt_affected_rows($stmt);
+
+		    if($rows === 1) # We are able to delete, hence signal success
+		    	return SUCCESSFUL_OPR;
+		    else # Some Error, despite several checks, Oooops!
+		    	return ERROR_VALUE;
+		    
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in deleteTodo()";
 			logMessage($ERROR_VALUE_DESC);
 			return ERROR_VALUE;
 		}
