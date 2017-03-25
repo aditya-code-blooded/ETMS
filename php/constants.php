@@ -25,6 +25,7 @@
 	define("INVALID_EMAIL", "Invalid email");
 	define("NEW_USER", "New user. Not yet added into database");
 	define("USER_ALREADY_REGISTERED","This username is already present in the database");
+	define("EMAIL_ADDRESS_NOT_FOUND","The user is registered, but the email address is not present in the database");
 
 	// Error message-strings which will be displayed on the console whenever something goes wrong
 	define("USER_NAME_ERROR"," * Username must contain atleast 7 and maximum 20 characters without spaces and must start with letters and contain only alphanumeric characters");

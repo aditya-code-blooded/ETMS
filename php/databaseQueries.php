@@ -226,11 +226,12 @@
 
 		# No error. Create a prepared statement
 
-		$query = "INSERT INTO todo(user_name,title,description) VALUES(?,?,?)";
+		$todo_date = date("Y-m-d");
+		$query = "INSERT INTO todo(user_name,title,description,todo_date) VALUES(?,?,?,?)";
 		if($stmt = mysqli_prepare($mysqli,$query)) {
 
 			# bind the parameters to the wildcard entries in the query
-		    mysqli_stmt_bind_param($stmt, "sss", $userName, $title, $desc);
+		    mysqli_stmt_bind_param($stmt, "ssss", $userName, $title, $desc, $todo_date);
 		    # execute the query
 		    mysqli_stmt_execute($stmt);
 		    # get the number of rows affected due to insert/delete/update
@@ -276,7 +277,7 @@
 
 		# No error. Create a prepared statement
 		
-		$query = "SELECT title, description FROM todo WHERE user_name = ?";
+		$query = "SELECT title, description, todo_date FROM todo WHERE user_name = ? ORDER BY todo_date DESC";
 		$json = array();
 		if($stmt = mysqli_prepare($mysqli,$query)) {
 
@@ -393,4 +394,204 @@
 	    return true;
 
 	}
+
+	
+	# This function is used to retrieve the user information from the users table, given
+	# a userName as input.
+	function getUserInfo($userName) {
+
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in getUserInfo() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+		
+		$query = "SELECT first_name, last_name, gender, profile_photo, 
+		college, address, contact FROM users WHERE user_name = ?";
+		
+		$json = array();
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# This is used for counting the number of rows
+			$rows = 0;
+			# bind the parameter to the wildcard entry in the query
+		    mysqli_stmt_bind_param($stmt, "s", $userName);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # Get the resultset
+			$result = mysqli_stmt_get_result($stmt);
+			
+			# Iterate over the resultset (Start appending the data to $json variable
+			# and keep incrementing the count of row variable)
+			while($eachRow = mysqli_fetch_assoc($result)) {
+				$rows++;
+  				$json[] = $eachRow;
+			}		    
+			// print_r($json);
+
+		    # If the number of rows retrieved are greater than zero, then there's no error
+		    if($rows >= 0)
+		    	return $json;
+		    else
+		    	return ERROR_VALUE; # Oops Error!
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in getUserInfo()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
+	# This function is used to retrieve the email address from the email_addresses table, given
+	# a userName as input.
+	function getEmailAddress($userName) {
+
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in getEmailAddress() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+		
+		$query = "SELECT email_id FROM email_addresses WHERE user_name = ? limit 1";
+		$emailAddress = ""; # The emailAddress which will be retrieved from the database
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# bind the parameter to the wildcard entry in the query
+		    mysqli_stmt_bind_param($stmt, "s", $userName);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # Get the number of rows retrieved (note the difference)
+		    mysqli_stmt_store_result($stmt);
+		    $rows = mysqli_stmt_num_rows($stmt);
+		    # bind the result
+		    mysqli_stmt_bind_result($stmt, $emailAddress);
+		    # fetch the result
+		    mysqli_stmt_fetch($stmt);
+		    
+		    # If the number of rows retrieved are zero then it means there is no user with such user_name in the DB
+		    if($rows === 0)
+		    	return EMAIL_ADDRESS_NOT_FOUND;
+		    else if($rows === 1)
+		    	return $emailAddress;
+		    else
+		    	return ERROR_VALUE; # Oops Error!
+
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in getEmailAddress()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
+	# This function is used to retrieve the todoCount (of this month) from the todo's table, given
+	# a userName as input.
+	function getTodoCount($userName) {
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in getTodoCount() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+		
+		$startDate = date('Y-m-01',strtotime('this month'));
+		$endDate = date('Y-m-t',strtotime('this month'));
+		$query = "SELECT COUNT(title) AS total_todos FROM todo WHERE user_name = ? AND todo_date >= ? AND todo_date <= ?";
+		$todoCount = ""; # The todoCount which will be retrieved from the database
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# bind the parameter to the wildcard entry in the query
+		    mysqli_stmt_bind_param($stmt, "sss", $userName, $startDate, $endDate);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # Get the number of rows retrieved (note the difference)
+		    mysqli_stmt_store_result($stmt);
+		    $rows = mysqli_stmt_num_rows($stmt);
+		    # bind the result
+		    mysqli_stmt_bind_result($stmt, $todoCount);
+		    # fetch the result
+		    mysqli_stmt_fetch($stmt);
+		    
+		    # If the number of rows retrieved is one then it means the query is proper
+		    if($rows === 1)
+		    	return $todoCount;
+		    else
+		    	return ERROR_VALUE; # Oops Error!
+
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in getTodoCount()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
+	# This function is used to retrieve the total expenses incurred (of this month) from the expenses table, given
+	# a userName as input.
+	function getTotalExpenses($userName) {
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in getTotalExpenses() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+		
+		$startDate = date('Y-m-01',strtotime('this month'));
+		$endDate = date('Y-m-t',strtotime('this month'));
+		$query = "SELECT SUM(amount) AS total_expenses FROM expenses WHERE user_name = ? AND paid_date >= ? AND paid_date <= ?";
+		$totalExpenses = ""; # The totalExpenses which will be retrieved from the database
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# bind the parameter to the wildcard entry in the query
+		    mysqli_stmt_bind_param($stmt, "sss", $userName, $startDate, $endDate);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # Get the number of rows retrieved (note the difference)
+		    mysqli_stmt_store_result($stmt);
+		    $rows = mysqli_stmt_num_rows($stmt);
+		    # bind the result
+		    mysqli_stmt_bind_result($stmt, $totalExpenses);
+		    # fetch the result
+		    mysqli_stmt_fetch($stmt);
+		    
+		    # If the number of rows retrieved is one then it means the query is proper
+		    if($rows === 1)
+		    	return $totalExpenses;
+		    else
+		    	return ERROR_VALUE; # Oops Error!
+
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in getTotalExpenses()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
 ?>

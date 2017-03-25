@@ -43,7 +43,7 @@
 		<script>
 
 			// A function which make an entry into the todoList 'div' tag, given the title and description
-			function addTodo(title,description) {
+			function addTodo(title,description,todoDate) {
 				// Create anchor tag
 	    		var $anchorTag = $("<a>", {"class": "list-group-item"}).css("padding","10px");
 	    		
@@ -56,15 +56,23 @@
 	    		h4Tag.style.marginLeft = "10px";
 
 	    		// Create p tag for holding our description
-	    		var pTag = document.createElement("p");
-	    		pTag.innerHTML = description;
-	    		pTag.class = "list-group-item-text";
-	    		pTag.style.color = "black";
-	    		pTag.style.marginLeft = "10px";
+	    		var pTag1 = document.createElement("p");
+	    		pTag1.innerHTML = description;
+	    		pTag1.class = "list-group-item-text";
+	    		pTag1.style.color = "black";
+	    		pTag1.style.marginLeft = "10px";
+
+	    		// Create another p tag for holding date
+	    		var pTag2 = document.createElement("p");
+	    		pTag2.innerHTML = "Date added: " + todoDate;
+	    		pTag2.class = "list-group-item-text";
+	    		pTag2.style.color = "black";
+	    		pTag2.style.marginLeft = "10px";
 
 	    		// Tie everythin together
 	    		$anchorTag.append(h4Tag);
-	    		$anchorTag.append(pTag);
+	    		$anchorTag.append(pTag1);
+	    		$anchorTag.append(pTag2);
 	    		$("#listOfTodos").append($anchorTag);
 			}
 
@@ -145,7 +153,12 @@
 						    	if(returnStatus === SUCCESSFUL_OPR) {
 						    		// Successfully created the TODO
 						    		// Add it to the unordered list
-						    		addTodo(title.value,description.value);
+						    		var d = new Date();
+								    var date = d.getDate();
+								    var month = d.getMonth() + 1;
+								    var year = d.getFullYear();
+								    var todoDate = year + "-" + month + "-" + date;
+						    		addTodo(title.value,description.value,todoDate);
 						    	}
 						    	else {
 						    		// Internal Database Error (Normally this case shouldn't occur)
@@ -186,7 +199,8 @@
 			    	var item = json[i];
 			    	var title = item['title'];
 			    	var description = item['description'];
-			    	addTodo(title,description);
+			    	var todoDate = item['todo_date'];
+			    	addTodo(title,description,todoDate);
 			    }
 			});
 

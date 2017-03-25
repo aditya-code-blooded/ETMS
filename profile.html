@@ -1,3 +1,41 @@
+<?php
+	// Start the session
+	session_start();
+	# Include the file for gaining access to several functions
+	require 'php/databaseQueries.php';
+	/*
+		Check whether the user is logged in. This can be done by
+		checking whether the session variables: userName and password
+		are set.
+	*/ 
+	if(isset($_SESSION['userName']) && isset($_SESSION['password'])) {
+		// If they are set we need to make sure they are valid
+		// We do this by making a database call
+
+		$result = present($_SESSION['userName'],$_SESSION['password']);
+		if($result === SUCCESSFUL_OPR) {
+			// The user is logged in, we need to retrieve user specific information from database
+			$userName = $_SESSION['userName'];
+
+			$userInfo = getUserInfo($userName);
+			$emailAddress = getEmailAddress($userName);
+			$todoCount = getTodoCount($userName);
+			$totalExpenses = getTotalExpenses($userName);
+		}
+		else {
+			# The sessions variables are set but are incorrect!
+			# Security threat - Go back to login page
+			header("Location: " . LOGIN_PAGE_URL);
+		}
+	}
+	else {
+		# If the session variables are not set then redirect to LOGIN page
+		header("Location: " . LOGIN_PAGE_URL);
+	}
+	# If the session is not set, it means the user is trying to login
+	# No security issue
+?>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -9,32 +47,149 @@
 
 		<script>
 
-			// A function which uses javascript 'Promise' object to asynchronously load our script files
-			function loadScript(src) {
-			    return new Promise(function (resolve, reject) {
-			        var s;
-			        s = document.createElement('script');
-			        s.src = src;
-			        s.onload = resolve;
-			        s.onerror = reject;
-			        document.head.appendChild(s);
-			    });
-			}
+			// Extract the php variables into javascript variables
+			// These variables will be used to populate the UI
+			var userName = <?php echo json_encode($userName); ?>;
+			var emailAddress = <?php echo json_encode($emailAddress); ?>;
+			var todoCount = <?php echo json_encode($todoCount); ?>;
+			var totalExpenses = <?php echo json_encode($totalExpenses); ?>;
+			var userInfo = <?php echo json_encode($userInfo)?>;
+			
+			console.log("Username is: " + userName);
+			console.log("emailAddress is: " + emailAddress);
+			console.log("todoCount is: " + todoCount);
+			console.log("totalExpenses is: " + totalExpenses);
+			console.log(userInfo);
 
-			/*
-				When the document is ready, we load the external script files asynchronously. This is because, the current page will be loaded asynchronously into the div tag of home.html. Whereas when script files are normally included in a webpage they load synchronously. Therefore as soon as our document gets loaded, we load all our required files asynchronously.
-			*/
+			// Parse the JSON object
+			var jsonObj = userInfo[0];
+			
+			var address = jsonObj['address'];
+			if(!address)
+				address = "You have not yet entered your address";
 
-			// loadScript("js/utility.js");
-    		// loadScript("js/constants.js");
+			var college = jsonObj['college'];
+			if(!college)
+				college = "You have not yet entered your college";
+
+			var contact = jsonObj['contact'];
+			if(!contact)
+				contact = "You have not yet entered your contact information";
+
+			var gender = jsonObj['gender'];
+			if(!gender)
+				gender = "Error: Gender not present";
+
+			var name = jsonObj['first_name'];
+			if(jsonObj['last_name'])
+				name += " " + jsonObj['last_name'];
+			
+			var profile_photo_path = jsonObj['profile_photo'];
+			if(!profile_photo_path)
+				profile_photo_path = "images/default-profile-picture.png";
+
+			// When the page is loaded, populate the UI with the data which we fetched from database and parsed above.
+			(function() {
+				var nameHeading = document.getElementById("nameHeading");
+    			nameHeading.innerHTML = name;
+
+    			var userProfilePic = document.getElementById("userProfilePic");
+    			userProfilePic.src = profile_photo_path;
+    			
+    			var userNameField = document.getElementById("userNameField");
+    			userNameField.innerHTML = userName;
+
+    			var collegeField = document.getElementById("collegeField");
+    			collegeField.innerHTML = college;
+
+    			var addressField = document.getElementById("addressField");
+    			addressField.innerHTML = address;
+
+    			var genderField = document.getElementById("genderField");
+    			genderField.innerHTML = gender;
+
+    			var contactField = document.getElementById("contactField");
+    			contactField.innerHTML = contact;
+
+    			var emailField = document.getElementById("emailField");
+    			emailField.innerHTML = emailAddress;
+
+    			var todoSummaryField = document.getElementById("todoSummaryField");
+    			todoSummaryField.innerHTML = todoCount;
+
+    			var expensesSummaryField = document.getElementById("expensesSummaryField");
+    			expensesSummaryField.innerHTML = totalExpenses;
+			})();
 
 		</script>
 	</head>
 	<body>
 		<div style="background-color: black;margin-top: -20px;">
 			<br/>
-			<div style="background-color: #001a1a;color: white;padding: 20px;margin-bottom: -40px">
+			<div style="background-color: #001a1a;color: black;padding: 20px;margin-bottom: -40px">
 				
+				<div class="container">
+		            <div class="row">
+		                <div class="actualContainer" >
+		                    <div class="panel panel-info">
+		                        <div class="panel-heading">
+		                            <h3 id="nameHeading" class="panel-title"></h3>
+		                        </div>
+		                        <div class="panel-body">
+		                            <div class="row">
+		                                <div class="col-md-5 col-lg-3 " align="center">
+		                                    <img id="userProfilePic" alt="User Profile Picture" src="" class="img-circle img-responsive">
+		                                </div>
+
+		                                <div class=" col-md-7 col-lg-9 "> 
+		                                    <table class="table table-user-information">
+		                                        <tbody>
+		                                            <tr>
+		                                                <td style="font-weight:bold">Username:</td>
+		                                                <td id="userNameField"></td>
+		                                            </tr>
+		                                            <tr>
+		                                                <td style="font-weight:bold">College:</td>
+		                                                <td id="collegeField"></td>
+		                                            </tr>
+		                                            <tr>
+		                                                <td style="font-weight:bold">Address:</td>
+		                                                <td id="addressField"></td>
+		                                            </tr>
+		                                            <tr>
+		                                                <td style="font-weight:bold">Gender:</td>
+		                                                <td id="genderField"></td>
+		                                            </tr>
+		                                            <tr>
+		                                                <td style="font-weight:bold">Contact:</td>
+		                                                <td id="contactField"></td>
+		                                            </tr>
+		                                            <tr>
+		                                                <td style="font-weight:bold">Email:</td>
+		                                                <td><a id="emailField" href="mailto:info@support.com"></a></td>
+		                                            <tr>
+		                                                <td style="font-weight:bold">Total TODO's this month:</td>
+		                                                <td id="todoSummaryField"></td>
+		                                            </tr>
+		                                            <tr>
+		                                                <td style="font-weight:bold">Total expenses incurred this month:</td>
+		                                                <td id="expensesSummaryField"></td>
+		                                            </tr>
+		                                        </tbody>
+		                                    </table>                  
+		                                </div>
+		                            </div>
+		                        </div>
+		                        <div class="panel-footer">
+		                            <a href="edit.html" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning">
+		                                <i class="glyphicon glyphicon-edit"></i>
+		                            </a>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+
 			</div>
 			<br/> <br/>
 		</div>
