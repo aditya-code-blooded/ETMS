@@ -2,7 +2,7 @@
 	// Start the session
 	session_start();
 	# Include the file for gaining access to several functions
-	require 'php/databaseQueries.php';
+	require_once 'php/databaseQueries.php';
 	/*
 		Check whether the user is logged in. This can be done by
 		checking whether the session variables: userName and password
@@ -22,6 +22,8 @@
 			# The sessions variables are set but are incorrect!
 			# Security threat - Currently let us log the statements
 			logMessage("Error: Session variables are set but are incorrect. Username: " . $_SESSION['userName'] . " Password: " . $_SESSION['password']);
+			# Redirect to the error page
+			header("Location: " . ERROR_PAGE_URL);
 		}
 	}
 	# If the session is not set, it means the user is trying to signup
@@ -32,15 +34,6 @@
 	<head>
 		<title>ETMS</title>
 		
-		<!--The script file which takes care of form validation at client side-->
-		<script src="js/clientValidate.js"></script>
-	
-		<!--The script file which has all the constants defined, which our js files use-->
-		<script src="js/constants.js"></script>
-
-		<!--The script file which contains utility functions-->
-		<script src="js/utility.js"></script>
-
 		<!-- Bootstrap library -->
 		<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
 
@@ -92,7 +85,7 @@
 				<label for="password">Password</label> <span id="passwordError" style="color:red;font-size:13px"></span>
 				<input type="password" class="form-control" placeholder="Password" required="" name="password" id="password" onclick="removePasswordErrorMessage(this)" /> <br />
 
-				<!-- Retype the password additional security-->
+				<!-- Retype the password (additional security)-->
 				<label for="retypePassword">Retype Password</label> <span id="retypePasswordError" style="color:red;font-size:13px"></span>
 				<input type="password" class="form-control" placeholder="Retype Password" required="" name="retypePassword" id="retypePassword" onclick="removeRetypeErrorMessage(this)" /> <br />
 				
@@ -101,6 +94,17 @@
 			</form>
 		</div>
 	</body>
+	
 	<!--Load the jQuery library. We load it at the end of the page for efficiency-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<!--The script file which takes care of form validation at client side-->
+	<script src="js/clientValidate.js"></script>
+
+	<!--The script file which has all the constants defined, which our js files use-->
+	<script src="js/constants.js"></script>
+
+	<!--The script file which contains utility functions-->
+	<script src="js/utility.js"></script>
+
 </html>
