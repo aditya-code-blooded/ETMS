@@ -465,38 +465,6 @@
 			return ERROR_VALUE;
 		}
 	}
-
-	/*
-		The below function returns an appropriate error message for the input password.
-		If everything went right, then the literal 'true' is returned
-	*/
-	function checkPassword($passwd) {
-	    
-		/*
-			This function enforces the following constraints on the password:
-			(i) Password length must lie between [7,20]
-			(ii) Must contain atleast one number
-			(iii) Must contain atleast one letter from the english alphabet (irrespective of case)
-			(iv) Must contain atleast one special character (!,(,),@,#,$,%,^,&,*,/,\,[,],{,},:,;,',`,?,+,-)
-			(i.e. almost all special characters present on the keyboard)
-		*/
-
-	    $length = strlen($passwd);
-
-	    if ($length < 6)
-	        return "Your password is too short. It must be atleast 7 characters.";
-	    else if ($length > 20)
-	        return "Your password is too long. It must be at maximum 20 characters";
-	    else if (preg_match('/[0-9]/',$passwd) !== 1)
-	        return "Your password must contain atleast one number";
-	    else if (preg_match('/[a-zA-Z]/',$passwd) !== 1)
-	        return "Your password must contain atleast one letter from the alphabet";
-	    else if (preg_match('/[!@%^&#*]/',$passwd) !== 1)
-	        return "Your password must contain atleast one special character";
-	    return true;
-
-	}
-
 	
 	# This function is used to retrieve the user information from the users table, given
 	# a userName as input.
