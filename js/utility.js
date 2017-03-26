@@ -106,3 +106,63 @@ function parseAmount(amountText) {
 		amount += amountText[i];
 	return amount;
 }
+
+// Opens the editing section in profile.html
+function openEditingSection() {
+	// Get the modal
+	var modal = document.getElementById('myModal');
+	modal.style.display = "block";
+	return false;
+}
+
+// Updates the college field in the database
+function updateCollege(userName,college) {
+	// We perform an AJAX POST operation to the database by the following php script
+	$.post('php/updateCollege.php',
+			{ 	userName: userName,
+				college: college
+			},
+			function(data){
+			    console.log(data);
+			}
+	);
+}
+
+// Updates the address field in the database
+function updateAddress(userName,address) {
+	// We perform an AJAX POST operation to the database by the following php script
+	$.post('php/updateAddress.php',
+			{ 	userName: userName,
+				address: address
+			},
+			function(data){
+			    console.log(data);
+			}
+	);
+}
+
+// Updates the contact field in the database
+function updateContact(userName,contact) {
+	// We perform an AJAX POST operation to the database by the following php script
+	$.post('php/updateContact.php',
+			{ 	userName: userName,
+				contact: contact
+			},
+			function(data){
+			    console.log(data);
+			}
+	);
+}
+
+// Updates the email field in the database
+function updateEmail(userName,email) {
+	// We perform an AJAX POST operation to the database by the following php script
+	$.post('php/updateEmail.php',
+			{ 	userName: userName,
+				email: email
+			},
+			function(data){
+			    console.log(data);
+			}
+	);
+}

@@ -2,7 +2,7 @@
 	// Start the session
 	session_start();
 	# Include the file for gaining access to several functions
-	require 'php/databaseQueries.php';
+	require_once 'php/databaseQueries.php';
 	/*
 		Check whether the user is logged in. This can be done by
 		checking whether the session variables: userName and password
@@ -23,9 +23,8 @@
 			$totalExpenses = getTotalExpenses($userName);
 		}
 		else {
-			# The sessions variables are set but are incorrect!
-			# Security threat - Go back to login page
-			header("Location: " . LOGIN_PAGE_URL);
+			# The sessions variables are set but are incorrect! Redirect to error page
+			header("Location: " . ERROR_PAGE_URL);
 		}
 	}
 	else {
@@ -60,12 +59,15 @@
 			}
 
 			/*
-				When the document is ready, we load the external script files asynchronously. This is because, the current page will be loaded asynchronously into the div tag of home.html. Whereas when script files are normally included in a webpage they load synchronously. Therefore as soon as our document gets loaded, we load all our required files asynchronously.
+				We load the external script files asynchronously. This is because,
+				the current page will be loaded asynchronously into the div tag of home.html.
+				Whereas when script files are normally included in a webpage they load synchronously.
+				Therefore, we load all our required files asynchronously using loadScript()
 			*/
 
 			loadScript("js/utility.js");
-    		loadScript("js/constants.js");
-    		loadScript("js/clientValidate.js");
+			loadScript("js/constants.js");
+			loadScript("js/clientValidate.js");
 
 			// Extract the php variables into javascript variables
 			// These variables will be used to populate the UI
@@ -74,7 +76,7 @@
 			var todoCount = <?php echo json_encode($todoCount); ?>;
 			var totalExpenses = <?php echo json_encode($totalExpenses); ?>;
 			var userInfo = <?php echo json_encode($userInfo)?>;
-			
+
 			console.log("Username is: " + userName);
 			console.log("emailAddress is: " + emailAddress);
 			console.log("todoCount is: " + todoCount);
@@ -83,7 +85,7 @@
 
 			// Parse the JSON object
 			var jsonObj = userInfo[0];
-			
+
 			var address = jsonObj['address'];
 			if(!address)
 				address = "You have not yet entered your address";
@@ -103,7 +105,7 @@
 			var name = jsonObj['first_name'];
 			if(jsonObj['last_name'])
 				name += " " + jsonObj['last_name'];
-			
+
 			var profile_photo_path = jsonObj['profile_photo'];
 			if(!profile_photo_path)
 				profile_photo_path = "images/default-profile-picture.png";
@@ -111,36 +113,36 @@
 			// When the page is loaded, populate the UI with the data which we fetched from database and parsed above.
 			(function() {
 				var nameHeading = document.getElementById("nameHeading");
-    			nameHeading.innerHTML = name;
+				nameHeading.innerHTML = name;
 
-    			var userProfilePic = document.getElementById("userProfilePic");
-    			userProfilePic.src = profile_photo_path;
-    			
-    			var userNameField = document.getElementById("userNameField");
-    			userNameField.innerHTML = userName;
+				var userProfilePic = document.getElementById("userProfilePic");
+				userProfilePic.src = profile_photo_path;
+				
+				var userNameField = document.getElementById("userNameField");
+				userNameField.innerHTML = userName;
 
-    			var collegeField = document.getElementById("collegeField");
-    			collegeField.innerHTML = college;
+				var collegeField = document.getElementById("collegeField");
+				collegeField.innerHTML = college;
 
-    			var addressField = document.getElementById("addressField");
-    			addressField.innerHTML = address;
+				var addressField = document.getElementById("addressField");
+				addressField.innerHTML = address;
 
-    			var genderField = document.getElementById("genderField");
-    			genderField.innerHTML = gender;
+				var genderField = document.getElementById("genderField");
+				genderField.innerHTML = gender;
 
-    			var contactField = document.getElementById("contactField");
-    			contactField.innerHTML = contact;
+				var contactField = document.getElementById("contactField");
+				contactField.innerHTML = contact;
 
-    			var emailField = document.getElementById("emailField");
-    			emailField.innerHTML = emailAddress;
+				var emailField = document.getElementById("emailField");
+				emailField.innerHTML = emailAddress;
 
-    			var todoSummaryField = document.getElementById("todoSummaryField");
-    			todoSummaryField.innerHTML = todoCount;
+				var todoSummaryField = document.getElementById("todoSummaryField");
+				todoSummaryField.innerHTML = todoCount;
 
-    			var expensesSummaryField = document.getElementById("expensesSummaryField");
-    			expensesSummaryField.innerHTML = totalExpenses;
+				var expensesSummaryField = document.getElementById("expensesSummaryField");
+				expensesSummaryField.innerHTML = totalExpenses;
 
-    			// Get the modal
+				// Get the modal
 				var modal = document.getElementById('myModal');
 
 				// Get the <span> element that closes the modal
@@ -158,65 +160,6 @@
 				    }
 				}
 			})();
-
-			function openEditingSection() {
-				// Get the modal
-				var modal = document.getElementById('myModal');
-				modal.style.display = "block";
-				return false;
-			}
-
-			// Updates the college field in the database
-			function updateCollege(userName,college) {
-				// We perform an AJAX POST operation to the database by the following php script
-	    		$.post('php/updateCollege.php',
-	    				{ 	userName: userName,
-	    					college: college
-	    				},
-	    				function(data){
-						    console.log(data);
-						}
-				);
-			}
-
-			// Updates the address field in the database
-			function updateAddress(userName,address) {
-				// We perform an AJAX POST operation to the database by the following php script
-	    		$.post('php/updateAddress.php',
-	    				{ 	userName: userName,
-	    					address: address
-	    				},
-	    				function(data){
-						    console.log(data);
-						}
-				);
-			}
-
-			// Updates the contact field in the database
-			function updateContact(userName,contact) {
-				// We perform an AJAX POST operation to the database by the following php script
-	    		$.post('php/updateContact.php',
-	    				{ 	userName: userName,
-	    					contact: contact
-	    				},
-	    				function(data){
-						    console.log(data);
-						}
-				);
-			}
-
-			// Updates the email field in the database
-			function updateEmail(userName,email) {
-				// We perform an AJAX POST operation to the database by the following php script
-	    		$.post('php/updateEmail.php',
-	    				{ 	userName: userName,
-	    					email: email
-	    				},
-	    				function(data){
-						    console.log(data);
-						}
-				);
-			}
 
 			// This function updates the user information by validating the form data and
 			// delegating the call to the database to a php script
@@ -305,6 +248,9 @@
 				
 				<div class="container">
 		            <div class="row">
+
+		            	<!-- The below container holds the actual UI for this page-->
+
 		                <div class="actualContainer" >
 		                    <div class="panel panel-info">
 		                        <div class="panel-heading">
@@ -361,12 +307,15 @@
 		                                </div>
 		                            </div>
 		                        </div>
+
+		                        <!-- Editing option for the user -->
 		                        <div class="panel-footer">
 		                            <a href="" data-original-title="Edit user info" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning" onclick="return openEditingSection()">
 		                                <i class="glyphicon glyphicon-edit"></i>
 		                            </a>
 		                        </div>
 
+		                        <!-- The below div tag contains the HTML markup needed for the pop-up -->
 		                        <div id="myModal" class="modal">
 
 							  		<!-- Modal content -->
@@ -377,7 +326,7 @@
 									    </div>
 									    <div class="modal-body">
 									      	<div class="wrapper">
-												<!--Form for creating a to-do-->
+												<!--Form for updating user information-->
 												<form class="form-login" id="update_user_form" action="" method="post" onsubmit="return updateUser()">
 
 													<!-- The College of the user -->
@@ -407,6 +356,7 @@
 
 		                    </div>
 		                </div>
+		                
 		            </div>
 		        </div>
 
