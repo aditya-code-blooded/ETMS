@@ -70,6 +70,55 @@
 		}
 	}
 
+	# This function checks whether there exists a user called $userName in the database
+	# It returns various status as return values:
+	# (i) ERROR_VALUE: If there is any other error such as connecting to the database, etc.
+	# (ii) NEW_USER: If the emailAddress is not present in the database
+	# (iii) USER_ALREADY_REGISTERED: If the email is already registered in the database
+	function checkUserName($userName) {
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in checkUserName() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+
+		$query = "SELECT user_name FROM users WHERE user_name = ?";
+		$retrievedUserName = ""; # This is of no use
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# bind the parameter to the wildcard entry in the query
+		    mysqli_stmt_bind_param($stmt, "s", $userName);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # Get the number of rows retrieved (note the difference)
+		    mysqli_stmt_store_result($stmt);
+		    $rows = mysqli_stmt_num_rows($stmt);
+		    # bind the result
+		    mysqli_stmt_bind_result($stmt, $retrievedUserName);
+		    # fetch the result
+		    mysqli_stmt_fetch($stmt);
+		    
+		    if($rows === 0)
+		    	return NEW_USER; # If no rows are retrieved then the user_name is new
+		    else if($rows > 0)
+		    	return USER_ALREADY_REGISTERED; # This user_name is already registered
+		    else
+		    	return ERROR_VALUE; # Oops! Error!
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in checkUserName()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
 	# This function checks whether there exists an email with value $emailAddress in the database
 	# It returns various status as return values:
 	# (i) ERROR_VALUE: If there is any other error such as connecting to the database, etc.
@@ -409,58 +458,6 @@
 		else {
 			# Error in creating the prepared statement. Report it to user
 			$ERROR_VALUE_DESC = "Error while creating the prepared statement in getExpenseList()";
-			logMessage($ERROR_VALUE_DESC);
-			return ERROR_VALUE;
-		}
-	}
-
-
-	# Functions related to server side validation of user input
-
-	# This function checks whether there exists a user called $userName in the database
-	# It returns various status as return values:
-	# (i) ERROR_VALUE: If there is any other error such as connecting to the database, etc.
-	# (ii) NEW_USER: If the emailAddress is not present in the database
-	# (iii) USER_ALREADY_REGISTERED: If the email is already registered in the database
-	function checkUserName($userName) {
-		# Open the connection to database
-		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
-
-		# If there is an error report it.
-		if (mysqli_connect_error()) {
-			$ERROR_VALUE_DESC = 'Error while connecting to database in checkUserName() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
-			logMessage($ERROR_VALUE_DESC);
-			return ERROR_VALUE;
-		}
-
-		# No error. Create a prepared statement
-
-		$query = "SELECT user_name FROM users WHERE user_name = ?";
-		$retrievedUserName = ""; # This is of no use
-		if($stmt = mysqli_prepare($mysqli,$query)) {
-
-			# bind the parameter to the wildcard entry in the query
-		    mysqli_stmt_bind_param($stmt, "s", $userName);
-		    # execute the query
-		    mysqli_stmt_execute($stmt);
-		    # Get the number of rows retrieved (note the difference)
-		    mysqli_stmt_store_result($stmt);
-		    $rows = mysqli_stmt_num_rows($stmt);
-		    # bind the result
-		    mysqli_stmt_bind_result($stmt, $retrievedUserName);
-		    # fetch the result
-		    mysqli_stmt_fetch($stmt);
-		    
-		    if($rows === 0)
-		    	return NEW_USER; # If no rows are retrieved then the user_name is new
-		    else if($rows > 0)
-		    	return USER_ALREADY_REGISTERED; # This user_name is already registered
-		    else
-		    	return ERROR_VALUE; # Oops! Error!
-		}
-		else {
-			# Error in creating the prepared statement. Report it to user
-			$ERROR_VALUE_DESC = "Error while creating the prepared statement in checkUserName()";
 			logMessage($ERROR_VALUE_DESC);
 			return ERROR_VALUE;
 		}
