@@ -1,5 +1,12 @@
-// This file groups together all the constants which will be used by the javascript files
-// Note: Do not change anything since this file depends on several other files including /php/.. files
+/*
+	This file groups together all the constants which will be used by the javascript files.
+	Note: Do not change anything since this file depends on several other files including /php/.. files
+	Note: In order to prevent Source-Code-Revelation attack make sure to move this file out of the
+	document root folder since it contains many constants used throughout the application.
+	The attacker might gain insight into our application workflow and this may produce a potential
+	threat. Don't forget to update the symlinks to this file (referenced from other files.)
+*/
+
 
 /*
 	A regex for username input. It enforces that:
