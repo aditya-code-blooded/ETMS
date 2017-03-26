@@ -2,7 +2,7 @@
 	// Start the session
 	session_start();
 	# Include the file for gaining access to several functions
-	require 'php/databaseQueries.php';
+	require_once 'php/databaseQueries.php';
 	/*
 		Check whether the user is logged in. This can be done by
 		checking whether the session variables: userName and password
@@ -18,8 +18,8 @@
 		}
 		else {
 			# The sessions variables are set but are incorrect!
-			# Security threat - Go back to login page
-			header("Location: " . LOGIN_PAGE_URL);
+			# Security threat - Go to error page
+			header("Location: " . ERROR_PAGE_URL);
 		}
 	}
 	else {
@@ -34,67 +34,10 @@
 <html>
 
 	<head>
-	 	<title>ETMS - Home</title>
+	 	<title>ETMS</title>
 	  	<meta charset="utf-8">
 	  	<meta name="viewport" content="width=device-width, initial-scale=1">
 	  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	  	<script>
-	  		
-	  		var currentlyActiveLink = "introLink";
-
-	  		// When the page is loaded, by default the home link at the header of the page must be clicked
-	  		$(document).ready(function() {
-    			$(".introLink").click();
-    			$(".introLink").parent().get(0).className = "active";
-            	$("." + currentlyActiveLink).parent().className = "";
-            	currentlyActiveLink = "introLink";
-            	$("#container").load("intro.html");
-			});
-
-	  		// When the header links are clicked, the div element marked with "container" ID
-	  		// must be loaded with respective HTML pages
-	  		// (In other words, the header is fixed for the entire application)
-
-            function loadIntro() {
-            	if(currentlyActiveLink != "introLink") {
-            		$(".introLink").parent().get(0).className = "active";
-	            	$("." + currentlyActiveLink).parent().get(0).className = "";
-	            	currentlyActiveLink = "introLink";
-	            	$("#container").load("intro.html");
-            	}
-            	return false;
-            }
-            function loadExpenses() {
-            	if(currentlyActiveLink != "expensesLink") {
-            		$(".expensesLink").parent().get(0).className = "active";
-	            	$("." + currentlyActiveLink).parent().get(0).className = "";
-	            	currentlyActiveLink = "expensesLink";
-	            	$("#container").load("expenses.html");
-            	}
-            	return false;
-            }
-            function loadTodo() {
-            	if(currentlyActiveLink != "todoLink") {
-            		$(".todoLink").parent().get(0).className = "active";
-	            	$("." + currentlyActiveLink).parent().get(0).className = "";
-	            	currentlyActiveLink = "todoLink";
-	            	$("#container").load("todo.html");
-            	}
-            	return false;
-            }
-            function loadProfile() {
-            	if(currentlyActiveLink != "profileLink") {
-            		$(".profileLink").parent().get(0).className = "active";
-	            	$("." + currentlyActiveLink).parent().get(0).className = "";
-	            	currentlyActiveLink = "profileLink";
-	            	$("#container").load("profile.html");
-            	}
-            	return false;
-            }
-	  	</script>
-
 	</head>
 
 	<body>
@@ -125,5 +68,64 @@
 		<div id="container"></div>
 
 	</body>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script>
+	  		
+  		var currentlyActiveLink = "introLink";
+
+  		// When the page is loaded, by default the home link at the header of the page must be clicked
+  		$(document).ready(function() {
+			$(".introLink").click();
+			$(".introLink").parent().get(0).className = "active";
+        	$("." + currentlyActiveLink).parent().className = "";
+        	currentlyActiveLink = "introLink";
+        	$("#container").load("intro.html");
+		});
+
+  		// When the header links are clicked, the div element marked with "container" ID
+  		// must be loaded with respective HTML pages
+  		// (In other words, the header is fixed for the entire application)
+
+        function loadIntro() {
+        	if(currentlyActiveLink != "introLink") {
+        		$(".introLink").parent().get(0).className = "active";
+            	$("." + currentlyActiveLink).parent().get(0).className = "";
+            	currentlyActiveLink = "introLink";
+            	$("#container").load("intro.html");
+        	}
+        	return false;
+        }
+        function loadExpenses() {
+        	if(currentlyActiveLink != "expensesLink") {
+        		$(".expensesLink").parent().get(0).className = "active";
+            	$("." + currentlyActiveLink).parent().get(0).className = "";
+            	currentlyActiveLink = "expensesLink";
+            	$("#container").load("expenses.html");
+        	}
+        	return false;
+        }
+        function loadTodo() {
+        	if(currentlyActiveLink != "todoLink") {
+        		$(".todoLink").parent().get(0).className = "active";
+            	$("." + currentlyActiveLink).parent().get(0).className = "";
+            	currentlyActiveLink = "todoLink";
+            	$("#container").load("todo.html");
+        	}
+        	return false;
+        }
+        function loadProfile() {
+        	if(currentlyActiveLink != "profileLink") {
+        		$(".profileLink").parent().get(0).className = "active";
+            	$("." + currentlyActiveLink).parent().get(0).className = "";
+            	currentlyActiveLink = "profileLink";
+            	$("#container").load("profile.html");
+        	}
+        	return false;
+        }
+        
+  	</script>
 
 </html>
