@@ -1,6 +1,12 @@
 <?php
 
 	# This .php file contains list of all constants which will be used by other php files
+	/*
+		Note: In order to prevent Source-Code-Revelation attack make sure to move this file out of the
+		document root folder since it contains many constants used throughout the application.
+		The attacker might gain insight into our application workflow and this may produce a potential
+		threat. Don't forget to update the symlinks to this file (referenced from other files.)
+	*/
 
 	# Connection parameters for the mysql database
 	# Need to find a better way to secure them (instead of directly embedding in the source code)
@@ -39,7 +45,7 @@
 	define("EMAIL_ALREADY_REGISTERED_ERROR"," * This email is already registered, choose another.");
 	define("FILL_THE_ENTIRE_FORM_ERROR","Please fill the entire form");
 
-	# Constants for web pages
+	# Constants for web page URL'S
 	define("SIGN_UP_URL","http://localhost/ETMS/signup.html");
 	define("HOME_PAGE_URL","http://localhost/ETMS/home.html");
 	define("LOGIN_PAGE_URL","http://localhost/ETMS/index.html");
