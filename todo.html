@@ -2,7 +2,7 @@
 	// Start the session
 	session_start();
 	# Include the file for gaining access to several functions
-	require 'php/databaseQueries.php';
+	require_once 'php/databaseQueries.php';
 	/*
 		Check whether the user is logged in. This can be done by
 		checking whether the session variables: userName and password
@@ -27,7 +27,7 @@
 	else {
 		# Session variables are not set
 		# Security threat - Redirect to error page
-		header("Location: " . ERROR_PAGE_URL);
+		header("Location: " . LOGIN_PAGE_URL);
 	}
 ?>
 <!DOCTYPE html>
@@ -121,54 +121,6 @@
 	    		$("#listOfTodos").prepend(divTag);
 			}
 
-			// A function which validates the title and returns appropriate status (which are self explanatory)
-			function validateTitle(title) {
-				var length = title.length;
-				if(length > 50)
-					return TITLE_LENGTH_EXCEEDED;
-				for(var i = 0;i < length;++i) {
-					switch(title[i]) {
-						case '<':
-						case '>':
-						case '/':
-						case '\\':
-						case '!':
-						case '@':
-						case '#':
-						case '$':
-						case '%':
-						case '^':
-						case '{':
-						case '}': return INVALID_TITLE;
-					}
-				}
-				return SUCCESSFUL_OPR;
-			}
-
-			// A function which validates the description and returns appropriate status (which are self explanatory)
-			function validateDescription(desc) {
-				var length = desc.length;
-				if(length > 200)
-					return DESC_LENGTH_EXCEEDED;
-				for(var i = 0;i < length;++i) {
-					switch(desc[i]) {
-						case '<':
-						case '>':
-						case '/':
-						case '\\':
-						case '!':
-						case '@':
-						case '#':
-						case '$':
-						case '%':
-						case '^':
-						case '{':
-						case '}': return INVALID_DESC;
-					}
-				}
-				return SUCCESSFUL_OPR;
-			}
-
 			// A function which validates the 'title' and 'description' fields and makes an AJAX call to dynamically create new TO-DO
 			function createTodo() {
 				var title = document.getElementById("title");
@@ -229,11 +181,12 @@
 			}
 
 			/*
-				When the document is ready, we load the external script files asynchronously. This is because, the current page will be loaded asynchronously into the div tag of home.html. Whereas when script files are normally included in a webpage they load synchronously. Therefore as soon as our document gets loaded, we load all our required files asynchronously.
+				We load the external script files asynchronously. This is because, the current page will be loaded asynchronously into the div tag of home.html. Whereas when script files are normally included in a webpage they load synchronously. Therefore, we load all our required files asynchronously using loadScript()
 			*/
 
 			loadScript("js/utility.js");
     		loadScript("js/constants.js");
+    		loadScript("js/clientValidate.js");
 
     		// We perform an AJAX GET operation to the database by the following php script
     		$.get('php/extractToDo.php', { userName: userName }, function(todoList){
@@ -273,8 +226,8 @@
 					</form>
 				</div>
 
-				<!-- These div tags hold our TO-DO list which will be extracted from database -->
 				<h1 id="yourTodos" style="text-align: center;font-weight:bold;padding: 10px">Your todo's</h1>
+				<!-- The below div tag holds our TO-DO list which will be extracted from database -->
 				<div id="listOfTodos" class="list-group" style="margin-top: 40px;"></div>
 
 			</div>

@@ -331,6 +331,30 @@ function validateAmount(amount) {
 	return SUCCESSFUL_OPR;
 }
 
+// A function which validates the title and returns appropriate status (which are self explanatory)
+function validateTitle(title) {
+	var length = title.length;
+	if(length > 50)
+		return TITLE_LENGTH_EXCEEDED;
+	for(var i = 0;i < length;++i) {
+		switch(title[i]) {
+			case '<':
+			case '>':
+			case '/':
+			case '\\':
+			case '!':
+			case '@':
+			case '#':
+			case '$':
+			case '%':
+			case '^':
+			case '{':
+			case '}': return INVALID_TITLE;
+		}
+	}
+	return SUCCESSFUL_OPR;
+}
+
 // A function which validates the description and returns appropriate status (which are self explanatory)
 function validateDescription(desc) {
 	var length = desc.length;
