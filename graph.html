@@ -2,7 +2,7 @@
 	// Start the session
 	session_start();
 	# Include the file for gaining access to several functions
-	require 'php/databaseQueries.php';
+	require_once 'php/databaseQueries.php';
 	/*
 		Check whether the user is logged in. This can be done by
 		checking whether the session variables: userName and password
@@ -26,9 +26,8 @@
 		}
 	}
 	else {
-		# Session variables are not set
-		# Security threat - Redirect to error page
-		header("Location: " . ERROR_PAGE_URL);
+		# Session variables are not set (Redirect to Login page)
+		header("Location: " . LOGIN_PAGE_URL);
 	}
 ?>
 <!DOCTYPE html>

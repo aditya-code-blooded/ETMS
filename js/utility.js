@@ -98,3 +98,11 @@ function removeAmountErrorMessage(ref) {
 	ref.style.borderColor = "";
 	amountError.innerHTML = "";
 }
+
+// Parses the amountText which is of the form: 'Amount paid: 150Rs'
+function parseAmount(amountText) {
+	var amount = "";
+	for(var i = 13;amountText[i] !== 'R';i++)
+		amount += amountText[i];
+	return amount;
+}

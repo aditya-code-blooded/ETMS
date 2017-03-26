@@ -311,3 +311,46 @@ function validateSignUp() {
 	*/
 	return false;
 }
+
+// A function which validates the amount and returns appropriate status (which are self explanatory)
+function validateAmount(amount) {
+	var length = amount.length;
+	if(length > 7)
+		return AMOUNT_EXCEEDED;
+	
+	var zeroEncountered = false;
+	for(var i = 0;i < length;++i) {
+		if(amount[i] === '0') {
+			if(!zeroEncountered)
+				return INVALID_AMOUNT;
+		}
+		else if(!(amount[i] >= '1' && amount[i] <= '9'))
+			return INVALID_AMOUNT;
+		zeroEncountered = true;
+	}
+	return SUCCESSFUL_OPR;
+}
+
+// A function which validates the description and returns appropriate status (which are self explanatory)
+function validateDescription(desc) {
+	var length = desc.length;
+	if(length > 200)
+		return DESC_LENGTH_EXCEEDED;
+	for(var i = 0;i < length;++i) {
+		switch(desc[i]) {
+			case '<':
+			case '>':
+			case '/':
+			case '\\':
+			case '!':
+			case '@':
+			case '#':
+			case '$':
+			case '%':
+			case '^':
+			case '{':
+			case '}': return INVALID_DESC;
+		}
+	}
+	return SUCCESSFUL_OPR;
+}
