@@ -42,15 +42,23 @@
       	<script>var userName = <?php echo json_encode($userName); ?>;</script>
 		<script>
 
-			var expensesCounter = 0;
+			// This variable is used as an 'id' for all the expenses
+			var expensesCounterId = 0;
+			/*
+				This variable keeps track of how many expenses are currently present.
+				It is used to determine whether we should display the button to generate
+				a graphical view or not.
+			*/
+			var expenseCounter = 0;
 
 			// A function which make an entry into the expensesList 'div' tag, given the amount and description
 			function addExpense(amount,description,paidDate) {
 
-	    		expensesCounter++;
+	    		expensesCounterId++;
+	    		expenseCounter++;
 	    		var divTag = document.createElement("div");
 	    		divTag.style.backgroundColor = "white";
-	    		divTag.id = expensesCounter;
+	    		divTag.id = expensesCounterId;
 	    		divTag.style.padding = "10px";
 	    		divTag.style.width = "700px";
 	    		divTag.style.marginTop = "10px";
@@ -70,7 +78,7 @@
 
 	    		// Create h4 tag for holding our amount
 	    		var h4Tag = document.createElement("h4");
-	    		h4Tag.id = "amount" + expensesCounter;
+	    		h4Tag.id = "amount" + expensesCounterId;
 	    		h4Tag.style.fontWeight = "bold";
 	    		h4Tag.style.color = "black";
 	    		h4Tag.innerHTML = "Amount paid: " + amount + "Rs";
@@ -78,7 +86,7 @@
 
 	    		// Create p tag for holding our description
 	    		var pTag1 = document.createElement("p");
-	    		pTag1.id = "desc" + expensesCounter;
+	    		pTag1.id = "desc" + expensesCounterId;
 	    		pTag1.innerHTML = description;
 	    		pTag1.style.color = "black";
 	    		pTag1.style.marginLeft = "10px";
@@ -94,9 +102,9 @@
 	    		deleteButton.className = "btn btn-default";
 	    		deleteButton.type = "submit";
 	    		deleteButton.value = "Delete";
-	    		deleteButton.name = "deleteButton" + expensesCounter;
+	    		deleteButton.name = "deleteButton" + expensesCounterId;
 	    		deleteButton.style.display = "none";
-	    		deleteButton.id = "deleteButton" + expensesCounter;
+	    		deleteButton.id = "deleteButton" + expensesCounterId;
 	    		deleteButton.onclick = function(ref) {
 	    			var id = document.getElementById(ref.target.id).parentElement.id;
 	    			document.getElementById(id).style.display = "none";
@@ -108,7 +116,20 @@
 	    						desc: desc
 	    					},
 	    					function(data){
-	    						console.log("deleteExpense returned: " + data);
+	    						if(data === SUCCESSFUL_OPR) {
+	    							// If the data has been successfully deleted, then decrement the counter
+	    							expenseCounter--;
+	    							/*
+										If there are no more Expenses then hide the
+										button (which will generate the graphical view)
+	    							*/
+	    							if(expenseCounter === 0) {
+	    								var graphButtonContainer = document.getElementById("graphButtonContainer");
+	    								graphButtonContainer.style.display = "none";
+	    							}
+	    						}
+	    						else
+	    							console.log("deleteExpense returned: " + data);
 	    					}
 	    			);
 	    		}
@@ -119,6 +140,15 @@
 	    		divTag.append(pTag2);
 	    		divTag.append(deleteButton);
 	    		$("#listOfExpenses").prepend(divTag);
+
+	    		/*
+					Note: This function is called when we are creating an expense report.
+					This means that there is atleast one expense report for the user
+					(present in the database) when this function completes.
+					Therefore we display the below button (See its declaration for its functionality)
+	    		*/
+	    		var graphButtonContainer = document.getElementById("graphButtonContainer");
+	    		graphButtonContainer.style.display = "block";
 			}
 
 			// Parses the amountText which is of the form: 'Amount paid: 150Rs'
@@ -276,8 +306,14 @@
 					</form>
 				</div>
 
-				<!-- These div tags hold our Expense list which will be extracted from database -->
-				<h1 id="yourExpenses" style="text-align: center;font-weight:bold;padding: 10px">Your Expense's</h1>
+				<h1 id="yourExpenses" style="text-align: center;font-weight:bold;padding: 10px">Your Expense's</h1><br/>
+				
+				<!-- A button which generates a graphical representation of the expense reports of the given user -->
+				<div id="graphButtonContainer" style="text-align:center;display:none">
+					<input class="btn btn-lg btn-primary" type="submit" name="graph_button" value="Display graphical view" onclick="window.open('graph.html', '_blank')"><br/>
+				</div>
+				
+				<!-- The below div tag holds our Expense list which will be extracted from database -->
 				<div id="listOfExpenses" class="list-group" style="margin-top: 40px;"></div>
 
 			</div>

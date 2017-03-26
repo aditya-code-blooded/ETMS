@@ -966,4 +966,54 @@
 		}
 	}
 
+	# This function retrieves the paid_date and amount given the userName as input
+	# It is used as a data input for generating the graph
+	function getPaidDateAndAmount($userName) {
+		# Open the connection to database
+		$mysqli = mysqli_connect($GLOBALS['dbServerName'],$GLOBALS['dbUserName'],$GLOBALS['dbPassword'],$GLOBALS['dbName']);
+
+		# If there is an error report it.
+		if (mysqli_connect_error()) {
+			$ERROR_VALUE_DESC = 'Error while connecting to database in getPaidDateAndAmount() function ' . mysqli_connect_errno() . ' ' . mysqli_connect_error();
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+
+		# No error. Create a prepared statement
+		
+		$query = "SELECT paid_date AS label, amount AS value FROM expenses WHERE user_name = ? ORDER BY paid_date ASC";
+		$dataSet = array(); # The data which will be retrieved from the database
+		if($stmt = mysqli_prepare($mysqli,$query)) {
+
+			# This is used for counting the number of rows
+			$rows = 0;
+			# bind the parameter to the wildcard entry in the query
+		    mysqli_stmt_bind_param($stmt, "s", $userName);
+		    # execute the query
+		    mysqli_stmt_execute($stmt);
+		    # Get the resultset
+			$result = mysqli_stmt_get_result($stmt);
+			
+			# Iterate over the resultset (Start appending the data to $dataSet variable
+			# and keep incrementing the count of row variable)
+			while($eachRow = mysqli_fetch_assoc($result)) {
+				$rows++;
+  				$dataSet[] = $eachRow;
+			}		    
+			// print_r($dataSet);
+
+		    # If the number of rows retrieved are greater than zero, then there's no error
+		    if($rows >= 0)
+		    	return $dataSet;
+		    else
+		    	return ERROR_VALUE; # Oops Error!
+		}
+		else {
+			# Error in creating the prepared statement. Report it to user
+			$ERROR_VALUE_DESC = "Error while creating the prepared statement in getPaidDateAndAmount()";
+			logMessage($ERROR_VALUE_DESC);
+			return ERROR_VALUE;
+		}
+	}
+
 ?>

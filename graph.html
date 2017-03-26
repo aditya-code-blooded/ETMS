@@ -1,0 +1,82 @@
+<?php
+	// Start the session
+	session_start();
+	# Include the file for gaining access to several functions
+	require 'php/databaseQueries.php';
+	/*
+		Check whether the user is logged in. This can be done by
+		checking whether the session variables: userName and password
+		are set.
+	*/
+	if(isset($_SESSION['userName']) && isset($_SESSION['password'])) {
+
+		// If they are set we need to make sure they are valid
+		// We do this by making a database call
+
+		$result = present($_SESSION['userName'],$_SESSION['password']);
+		if($result === SUCCESSFUL_OPR) {
+			// Extract the userName and then extract the data required for graph
+			$userName = $_SESSION['userName'];
+			$graphData = getPaidDateAndAmount($userName);
+		}
+		else {
+			# The sessions variables are set but are incorrect!
+			# Security threat - Redirect to error page
+			header("Location: " . ERROR_PAGE_URL);
+		}
+	}
+	else {
+		# Session variables are not set
+		# Security threat - Redirect to error page
+		header("Location: " . ERROR_PAGE_URL);
+	}
+?>
+<!DOCTYPE html>
+<html>
+	<!-- This file renders a full-page graph of the user's expenses -->
+	<head>
+		<script>
+
+			// Extract the php data into javascript variables
+			var userName = <?php echo json_encode($userName); ?>;
+			var dataSource = <?php echo json_encode($graphData); ?>;
+			console.log(dataSource);
+
+		</script>
+
+		<!-- The following 2 script files are used to generate the graph -->
+		<script type="text/javascript" src="fusioncharts/js/fusioncharts.js"></script>
+		<script type="text/javascript" src="fusioncharts/js/themes/fusioncharts.theme.fint.js"></script>
+
+		<!-- Configuring the graph/chart to our requirements -->
+		<script type="text/javascript">
+		  FusionCharts.ready(function(){
+		    var revenueChart = new FusionCharts({
+		        "type": "column2d",
+		        "renderAt": "chartContainer",
+		        "width": "1000",
+		        "height": "600",
+		        "dataFormat": "json",
+		        "dataSource":  {
+		          "chart": {
+		            "caption": "Expenses incurred",
+		            "subCaption": "",
+		            "xAxisName": "Date",
+		            "yAxisName": "Amount paid (INR)",
+		            "theme": "fint"
+		         },
+		         "data": dataSource
+		      	}
+
+		  	});
+			revenueChart.render();
+		})
+		</script>
+
+	</head>
+	<body>
+
+		<div id="chartContainer" style="text-align:center">Loading...</div>
+
+	</body>
+</html>
