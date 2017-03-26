@@ -9,26 +9,21 @@
 		checking whether the session variables: userName and password
 		are set.
 	*/ 
-	logMessage("Inside profilePhotoUpload.php");
 	if(isset($_SESSION['userName']) && isset($_SESSION['password'])) {
 		# If they are set we need to make sure they are valid
 		# We do this by making a database call
-		logMessage("Session variables are present");
 		$result = present($_SESSION['userName'],$_SESSION['password']);
 		if($result === SUCCESSFUL_OPR) {
 			// The user is logged in, store the userName
-			logMessage("They are valid too!");
 			$userName = $_SESSION['userName'];
 		}
 		else {
-			logMessage("They are invalid");
 			# The sessions variables are set but are incorrect!
 			# Security threat - Go back to login page
-			header("Location: " . LOGIN_PAGE_URL);
+			header("Location: " . ERROR_PAGE_URL);
 		}
 	}
 	else {
-		logMessage("Session variables are not present");
 		# If the session variables are not set then redirect to LOGIN page
 		header("Location: " . LOGIN_PAGE_URL);
 	}

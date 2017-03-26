@@ -30,8 +30,8 @@
 	}
 	else {
 		# The sessions variables are NOT set!
-		# Security threat - Redirect to Error page
-		header("Location: " . ERROR_PAGE_URL);
+		# Security threat - Redirect to Login page
+		header("Location: " . LOGIN_PAGE_URL);
 	}
 
 	if(isset($_POST["amount"]) && isset($_POST["description"])) {
@@ -39,8 +39,8 @@
 
 	  	# Add the ToDo entry to database
 	  	$userName = $_SESSION["userName"];
-	  	$amount = $_POST["amount"];
-	  	$desc = $_POST["description"];
+	  	$amount = test_input($_POST["amount"]);
+	  	$desc = test_input($_POST["description"]);
 		$result = addExpenseEntry($userName,$amount,$desc);
 
 		echo $result; # Send the return status to the AJAX callback function

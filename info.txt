@@ -63,6 +63,7 @@ It is not yet implemented in our code. First when there are several user request
 Using PDO (PHP Data Objects)
 Object oriented version of PHP (Currently we used mysqli - with procedural paradigm)
 Backend validation when front-end validation is turned off for few webpages within our application (graceful degradation) (If anyone required that after putting it in Github, say them to raise an issue or ping me. I'll implement. This feature is only for those who want to use this tool for their daily purposes)
+Check whether we need to make a database call each and everytime. in sessions in php script
 
 ->Note
 When the session is deleted manually by the user, then few errors are occurring. Fix em'.

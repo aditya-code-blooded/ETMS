@@ -31,17 +31,8 @@
 	# If the session is not set, it means the user is trying to login
 	# No security issue
 
-	/*
-		Go to php.ini file in ./php/7.0/apachee tergv
-		find error_reporting and restore changes
-		and display_startup_errors also 
-		and then restart the server
-	*/
-
-	// Comment the below 2 lines
 	error_reporting(E_ALL);
 	ini_set('display_errors', 'On');
-
 
 	if (isset($_POST['login_button'])) {
 		# Test for malicious input (The return value will be free from sql injection attack)
