@@ -1,4 +1,4 @@
-(i)SQL Injection: Make sure no input from the user (either from the web form or url) has an impact on the database. Solution is to process the data before executing them
+(i)SQL Injection: Make sure no input from the user (either from the web form or url) has an impact on the database. Solution is to process the data before executing them (Done - Only for few php script files the validation is not done example extractTodo.php)
 
 (ii)XSS: The essence of any XSS attack is the injection of code (usually JavaScript code but it can be any client-side code) into the output of your PHP script. This attack is possible when you display input that was sent to you, such as you would do with a forum posting for example. The attacker may post JavaScript code in his message that does unspeakable things to your site.
 Cross-site scripting attacks can be grouped in two major categories, based on how they deliver the malicious payload: non-persistent XSS, and persistent XSS.
@@ -20,11 +20,13 @@ Data sanitization focuses on manipulating the data to make sure it is safe by re
 
 In order to protect the integrity of displayed/output data, you should escape the data when presenting it to the user. This prevents the browser from applying any unintended meaning to any special sequence of characters that may be found.
 
+This is also done (Status is same as SQL Injection)
 
 (iii)Source Code Revelation: This one has to do with people being able to see the names and content of files they shouldn’t in the event of a breakdown in Apache’s configuration.
 We all know that PHP is server side – you can’t just do a view source to see a script’s code. But if something happens to Apache and all of a sudden your scripts are served as plain text, people see source code they were never meant to see. Some of that code might list accessible configuration files or have sensitive information like database credentials.
 The solution centers around how you set up the directory structure for your application. That is, it isn’t so much a problem that bad people can see some code, it’s what code they can see if sensitive files are kept in a public directory. Keep important files out of the publicly-accessible directory to avoid the consequences of this blunder.
 In the README file, add the comment saying that "For securing from Source Code Revelation", put all the files (such as constants.js/php files outside the document root folder and update the symlinks in the source code wherever necessary)
+(This is done. Just document in README)
 
 (iv)Remote File Inclusion
 Remote file inclusion is when remote files get included in your application. Suppose you have a situation where your site at www.myplace.com includes the library www.goodpeople.com/script.php. One night, www.goodpeople.com is compromised and the contents of the file is replaced with evil code that will trash your application. Then someone visits your site, you pull in the updated code, and Bam! So how do you stop it? All you have to do is go to your php.ini and check the settings on these flags.
