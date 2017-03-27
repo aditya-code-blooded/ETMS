@@ -36,6 +36,7 @@
 	if(isset($_POST["userName"]) && isset($_POST["college"])) {
 		$userName = test_input($_POST["userName"]);
 		$college = test_input($_POST["college"]);
+		// Validate each of the input fields here before going further
 		$result = updateCollege($userName,$college);
 		echo $result;
 	}

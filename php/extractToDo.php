@@ -36,6 +36,7 @@
 
 	if(isset($_GET["userName"])) {
 		$userName = test_input($_GET["userName"]);
+		// Validate each of the input fields here before going further
 		$todoList = getToDoList($userName);
 		$jsonTodo = json_encode($todoList);
 		echo $jsonTodo;

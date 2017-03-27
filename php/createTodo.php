@@ -41,6 +41,8 @@
 	  	$userName = $_SESSION["userName"];
 	  	$title = test_input($_POST["title"]);
 	  	$desc = test_input($_POST["description"]);
+		// Validate each of the input fields here before going further
+		
 		$result = addToDoEntry($userName,$title,$desc);
 
 		echo $result; # Send the return status to the AJAX callback function

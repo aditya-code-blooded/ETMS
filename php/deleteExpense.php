@@ -38,6 +38,7 @@
 		$userName = test_input($_POST["userName"]);
 		$amount = test_input($_POST["amount"]);
 		$desc = test_input($_POST["desc"]);
+		// Validate each of the input fields here before going further
 		echo deleteExpense($userName,$amount,$desc);
 	}
 	else {

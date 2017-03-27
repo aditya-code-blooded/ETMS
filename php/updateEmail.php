@@ -36,6 +36,7 @@
 	if(isset($_POST["userName"]) && isset($_POST["email"])) {
 		$userName = test_input($_POST["userName"]);
 		$email = test_input($_POST["email"]);
+		// Validate each of the input fields here before going further
 		$result = updateEmail($userName,$email);
 		echo $result;
 	}

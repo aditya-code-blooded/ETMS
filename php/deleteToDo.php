@@ -38,6 +38,7 @@
 		$userName = test_input($_POST["userName"]);
 		$title = test_input($_POST["title"]);
 		$desc = test_input($_POST["desc"]);
+		// Validate each of the input fields here before going further
 		echo deleteTodo($userName,$title,$desc);
 	}
 	else {

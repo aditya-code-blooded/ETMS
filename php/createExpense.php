@@ -41,6 +41,7 @@
 	  	$userName = $_SESSION["userName"];
 	  	$amount = test_input($_POST["amount"]);
 	  	$desc = test_input($_POST["description"]);
+	  	// Validate each of the input fields here before going further
 		$result = addExpenseEntry($userName,$amount,$desc);
 
 		echo $result; # Send the return status to the AJAX callback function
