@@ -10,7 +10,7 @@ ETMS (Expenses and To-do Management System) is a web application developed using
 </ul>
 
 <h2>Running the Project</h2>
-It is recommended to run this application in any Linux environemnt (Preferably Ubuntu, since this procedure is documented considering the environment as Ubuntu-16.04)
+It is recommended to run this application in any Linux environment (Preferably Ubuntu, since this procedure is documented considering the environment as Ubuntu-16.04)
 <ul>
   <li>Make sure you have Apache, PHP, and MySQL installed</li>
   <li>Enable php scripts to run in .html files (By default this switch is turned off)</li>
@@ -18,7 +18,7 @@ It is recommended to run this application in any Linux environemnt (Preferably U
   <li>Create a database called etms_db in MySQL and use db_init.sql file to load the required back-end tables (along with some dummy data so that once your application starts you have some data to show)</li>
   <li>Clone the project into <i>/var/www/html/</i> directory</li>
   <li>Start your apache server. If it is already running then restart it (so that the changes which you've made get reflected)</li>
-  <li>The project is now up and running. You can access it at: <a href="locahost/ETMS">locahost/ETMS</a>. If your apache server is not running on the default port(Port-80), then it can be accessed at localhost:&lt;apache-port&gt;/ETMS</li>
+  <li>The project is now up and running. You can access it at: <a href="http://www.localhost/ETMS">localhost/ETMS</a>. If your apache server is not running on the default port(Port-80), then it can be accessed at localhost:&lt;apache-port&gt;/ETMS</li>
 </ul>
 If you find any problem deploying the project in your machine, please do let me know.
 
