@@ -64,6 +64,7 @@ var INVALID_AMOUNT_ERROR = " * Amount should be a valid positive integer < 10^6"
 var HOME_PAGE_URL = "http://localhost/ETMS/home.html";
 var SIGN_UP_URL = "http://localhost/ETMS/signup.html";
 var LOGIN_URL = "http://localhost/ETMS/index.html";
+var ERROR_PAGE_URL = "http://localhost/ETMS/error.html";
 
 // Some other constants
 var INVALID_TITLE = "Title is invalid";

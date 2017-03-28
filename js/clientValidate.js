@@ -183,27 +183,35 @@ function validateLogin() {
 		    		// Password is incorrect
 		    		passwordError.innerHTML = INCORRECT_PASSWORD_ERROR; // Set the text in the span tag
 		    		password.style.borderColor = "red";
+		    		incorrectAttempt();
 		    	}
 		    	else if(returnStatus === UNREGISTERED_USER) {
 		    		// User not signed up
 		    		userNameError.innerHTML = UNREGISTERED_USER_ERROR; // Set the text in the span tag
 		    		userName.style.borderColor = "red";
+		    		incorrectAttempt();
 		    	}
 		    	else if(returnStatus === INVALID_USER_NAME) {
 		    		// UserName did not pass the regex test at the server end
 		    		userNameError.innerHTML = USER_NAME_ERROR;
 		    		userName.style.borderColor = "red";
+		    		incorrectAttempt();
 		    	}
 		    	else if(returnStatus === INVALID_PASSWORD) {
 		    		// Password did not pass the regex test at the server end
 		    		passwordError.innerHTML = PASSWORD_ERROR;
 		    		password.style.borderColor = "red";
+		    		incorrectAttempt();
 		    	}
 		    	else {
 		    		// Internal Database Error (Normally this case shouldn't occur)
 		    		userNameError.innerHTML = "FATAL ERROR: " + returnStatus;
+		    		incorrectAttempt();
 		    	}
 		});
+	}
+	else {
+		incorrectAttempt();
 	}
 	/*
 		Since we are making an AJAX call, we should not return true. If we return true then the html
@@ -260,6 +268,7 @@ function validateSignUp() {
 		|| userName.value === "" || password.value === "" || retypePassword.value === "") {
 		// Test message
 		document.getElementById("emptyFormError").innerHTML = FILL_THE_ENTIRE_FORM_ERROR;
+		incorrectAttempt();
 		return false;
 	}
 
@@ -288,19 +297,25 @@ function validateSignUp() {
 		    		// The userName is already registered (error)
 		    		userNameError.innerHTML = USER_ALREADY_REGISTERED_ERROR;
 		    		userName.style.borderColor = "red";
+		    		incorrectAttempt();
 		    	}
 		    	else if(returnStatus === EMAIL_ALREADY_REGISTERED) {
 		    		// The emailAddress is already registered (error)
 		    		emailError.innerHTML = EMAIL_ALREADY_REGISTERED_ERROR;
 		    		emailAddress.style.borderColor = "red";
+		    		incorrectAttempt();
 		    	}
 		    	else if(returnStatus === SUCCESSFUL_OPR) // Signup successful
 		    		window.location.href = HOME_PAGE_URL; // Redirect to home page
 		    	else {
 		    		// Internal Database Error (Normally this case shouldn't occur)
 		    		userNameError.innerHTML = "FATAL ERROR: " + returnStatus;
+		    		incorrectAttempt();
 		    	}
 		});
+	}
+	else {
+		incorrectAttempt();
 	}
 
 	/*
@@ -377,4 +392,16 @@ function validateDescription(desc) {
 		}
 	}
 	return SUCCESSFUL_OPR;
+}
+
+// A function which will increment the incorrectAttempts variable
+// When the number of incorrect attempts reaches a fixed value (here 5)
+// the user will be redirected to error.html
+function incorrectAttempt() {
+	window.incorrectAttempts++;
+	console.log("Incorrect attempts are: " + window.incorrectAttempts);
+	if(window.incorrectAttempts === 5) {
+		console.log("You have reached max limit of incorrect attempts")
+		window.location.href = ERROR_PAGE_URL;
+	}
 }
