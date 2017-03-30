@@ -19,6 +19,12 @@ It is recommended to run this application in any Linux environment (Preferably U
   <li>Clone the project into <i>/var/www/html/</i> directory</li>
   <li>Start your apache server. If it is already running then restart it (so that the changes which you've made get reflected)</li>
   <li>The project is now up and running. You can access it at: <a href="http://www.localhost/ETMS">localhost/ETMS</a>. If your apache server is not running on the default port(Port-80), then it can be accessed at localhost:&lt;apache-port&gt;/ETMS</li>
+  <li>Once you boot up the application, you can use any of the following dummy accounts to get started:<br/>
+  - tonystark123<br/>
+  - captainAmerica123<br/>
+  - hulk123<br/>
+  For all the above username's the password is: <i>Avengers123!</i><br/>
+  You can of course start by creating your own account.</li>
 </ul>
 If you find any problem deploying the project in your machine, please do let me know.
 
